@@ -7,16 +7,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 
 import com.toedter.calendar.JDateChooser;
 
-import service.BancoDeDados;
+import model.BancoDeDados;
 
 public class TelaRelatorio extends JFrame {
 
@@ -25,9 +28,9 @@ public class TelaRelatorio extends JFrame {
 	public static SimpleDateFormat formatoBr = new SimpleDateFormat("yyyy-MM-dd");
 	public static JDateChooser txtInicio;
 	public static JDateChooser txtFinal;
-	public static JLabel somaVacinas;
-	public static JTable tblResult;
-
+	public static JComboBox<String> comboVet;
+	public static JComboBox<String> comboTipo;
+	public static JComboBox<String> comboReal;
 
 	/**
 	 * Launch the application.
@@ -39,20 +42,23 @@ public class TelaRelatorio extends JFrame {
 					TelaRelatorio frame = new TelaRelatorio();
 					frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Erro: " + e.toString());	
 				}
 			}
 		});
 	}
 
-
-
 	/**
 	 * Create the frame.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public TelaRelatorio() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1080, 709);
+
+		setResizable(false);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setBounds(100, 100, 799, 317);
+		setLocationRelativeTo(null);
+
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -74,59 +80,76 @@ public class TelaRelatorio extends JFrame {
 		lblClientes.setBounds(254, 67, 103, 16);
 		contentPane.add(lblClientes);
 
-		JDateChooser txtInicio = new JDateChooser();
+		txtInicio = new JDateChooser();
+		txtInicio.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtInicio.setBounds(95, 64, 109, 22);
 		contentPane.add(txtInicio);
 
-		JDateChooser txtFinal = new JDateChooser();
+		txtFinal = new JDateChooser();
+		txtFinal.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtFinal.setBounds(325, 64, 109, 22);
 		contentPane.add(txtFinal);
 
-		JButton btnPesquisar = new JButton("Pesquisar");
+		JButton btnPesquisar = new JButton("Gerar Relat\u00F3rio");
+		btnPesquisar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String datainicio =  formatoBr.format(txtInicio.getDate());
-				String datafinal = formatoBr.format(txtFinal.getDate());
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.gerarRelatorio(datainicio , datafinal, somaVacinas);
-				banco.relatorio(datainicio, datafinal, tblResult);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.gerarRelatorio(txtInicio, txtFinal, comboReal, comboTipo, comboVet);
+					banco.desconectar();
+				}
 			}
 		});
-		btnPesquisar.setBounds(501, 63, 97, 25);
+		btnPesquisar.setBounds(297, 207, 137, 25);
 		contentPane.add(btnPesquisar);
 
-		JLabel lblTotalDeAtendimentos = new JLabel("Total de Vacinas no per\u00EDodo:");
-		lblTotalDeAtendimentos.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotalDeAtendimentos.setBounds(12, 564, 204, 16);
-		contentPane.add(lblTotalDeAtendimentos);
+		comboVet = new JComboBox<String>();
+		comboVet.setFont(new Font("Tahoma", Font.BOLD, 13));
+		comboVet.setBounds(12, 144, 192, 22);
+		contentPane.add(comboVet);
 
-		JLabel lblTotalDeConsultas = new JLabel("Total de Consultas no per\u00EDodo:");
-		lblTotalDeConsultas.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotalDeConsultas.setBounds(12, 535, 204, 16);
-		contentPane.add(lblTotalDeConsultas);
+		comboTipo = new JComboBox<String>();
+		comboTipo.setFont(new Font("Tahoma", Font.BOLD, 13));
+		comboTipo.setModel(new DefaultComboBoxModel(new String[] {"Todos", "Consulta", "Cirurgia", "Vacina"}));
+		comboTipo.setBounds(254, 144, 180, 22);
+		contentPane.add(comboTipo);
 
-		JLabel lblTotalDeCirurgia = new JLabel("Total de Cirurgia no per\u00EDodo:");
-		lblTotalDeCirurgia.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTotalDeCirurgia.setBounds(12, 594, 204, 16);
-		contentPane.add(lblTotalDeCirurgia);
+		comboReal = new JComboBox<String>();
+		comboReal.setFont(new Font("Tahoma", Font.BOLD, 13));
+		comboReal.setModel(new DefaultComboBoxModel(new String[] {"Todos", "Realizado", "N\u00E3o Realizado"}));
+		comboReal.setBounds(12, 208, 128, 22);
+		contentPane.add(comboReal);
 
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setBounds(226, 535, 56, 16);
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(TelaRelatorio.class.getResource("/imagens/Relatorio.png")));
+		lblNewLabel.setBounds(469, 46, 281, 211);
 		contentPane.add(lblNewLabel);
 
-		somaVacinas = new JLabel("New label");
-		somaVacinas.setBounds(226, 564, 390, 16);
-		contentPane.add(somaVacinas);
+		JLabel lblNewLabel_1 = new JLabel("Atendimento:");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblNewLabel_1.setBounds(12, 179, 109, 16);
+		contentPane.add(lblNewLabel_1);
 
-		JLabel lblNewLabel_2 = new JLabel("New label");
-		lblNewLabel_2.setBounds(226, 594, 56, 16);
+		JLabel lblNewLabel_2 = new JLabel("Veterin\u00E1rio:");
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblNewLabel_2.setBounds(12, 115, 94, 16);
 		contentPane.add(lblNewLabel_2);
 
-		tblResult = new JTable();
+		JLabel lblNewLabel_3 = new JLabel("Tipo:");
+		lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblNewLabel_3.setBounds(254, 115, 56, 16);
+		contentPane.add(lblNewLabel_3);
 
-		tblResult.setBounds(37, 146, 561, 346);
-		contentPane.add(tblResult);
+		JButton btnVoltar = new JButton("Voltar");
+		btnVoltar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+			}
+		});
+		btnVoltar.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnVoltar.setBounds(188, 207, 97, 25);
+		contentPane.add(btnVoltar);
 	}
 }

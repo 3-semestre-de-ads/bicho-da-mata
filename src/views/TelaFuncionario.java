@@ -38,9 +38,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 
-import WebService.WebServiceCep;
-
-import service.BancoDeDados;
+import controller.Funcionario;
+import model.BancoDeDados;
 /**
  * Classe responsavel para ser o layout para receber o cadastro do funcionario bem como, estagiário, auxiliar , atendente e veterinário inserimos uma
  * API do carreios para buscar o CEP os metodos criados na classe BancaDeDados sera invocados para realizar o CRUD dessas informacoes.
@@ -48,7 +47,7 @@ import service.BancoDeDados;
  *
  */
 public class TelaFuncionario extends JFrame {
-	
+
 	private static final long serialVersionUID = 1L;
 	ButtonGroup g1 = new ButtonGroup();
 	public static JRadioButton opMasc = new JRadioButton("Masculino");
@@ -71,11 +70,13 @@ public class TelaFuncionario extends JFrame {
 	public static JList<String> listName;
 	public static JTextField txtID;
 	public static JTextField txtCrmv;
-	public static JComboBox<Object> comboFuncao;
+	public static JComboBox<String> comboFuncao;
 	public static JFormattedTextField txtValidade;
 	public static JButton btnSalvar;
 	public static JButton btnEditar;
-	
+	public static JLabel lblCrmv;
+	public static JLabel lblValidade;
+
 
 	/**
 	 * Launch the application.
@@ -87,7 +88,7 @@ public class TelaFuncionario extends JFrame {
 					TelaFuncionario frame = new TelaFuncionario();
 					frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 				}
 			}
 		});
@@ -104,12 +105,13 @@ public class TelaFuncionario extends JFrame {
 		setTitle("Bicho da Mata - Funcion\u00E1rio");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 949, 600);
+		setLocationRelativeTo(null);
+
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
@@ -125,6 +127,7 @@ public class TelaFuncionario extends JFrame {
 		panel.add(label);
 
 		txtNome = new JTextField();
+		txtNome.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtNome.setColumns(10);
 		txtNome.setBounds(12, 42, 189, 22);
 		panel.add(txtNome);
@@ -140,11 +143,12 @@ public class TelaFuncionario extends JFrame {
 		panel.add(label_2);
 
 		txtCpf = new JFormattedTextField();
+		txtCpf.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		try {
 			txtCpf.setFormatterFactory(new DefaultFormatterFactory(
-				new MaskFormatter("###.###.###-##")));
+					new MaskFormatter("###.###.###-##")));
 		} catch (ParseException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 		}
 		txtCpf.setColumns(10);
 		txtCpf.setBounds(241, 42, 116, 22);
@@ -161,7 +165,6 @@ public class TelaFuncionario extends JFrame {
 
 			}
 		});
-
 
 		opMasc.setFont(new Font("Tahoma", Font.BOLD, 13));
 		opMasc.setBackground(Color.WHITE);
@@ -181,12 +184,10 @@ public class TelaFuncionario extends JFrame {
 			}
 		});
 
-
 		opFem.setFont(new Font("Tahoma", Font.BOLD, 13));
 		opFem.setBackground(Color.WHITE);
 		opFem.setBounds(114, 97, 127, 25);
 		panel.add(opFem);
-
 
 		g1.add(opFem);
 		g1.add(opMasc);
@@ -197,37 +198,17 @@ public class TelaFuncionario extends JFrame {
 		panel.add(label_3);
 
 		txtCep = new JFormattedTextField();
+		txtCep.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		try {
 			txtCep.setFormatterFactory(new DefaultFormatterFactory(
-				new MaskFormatter("#####-###")));
+					new MaskFormatter("#####-###")));
 		} catch (ParseException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 		}
 		txtCep.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
-
-				WebServiceCep webService = WebServiceCep.searchCep(txtCep.getText());
-				try {
-					if (webService.wasSuccessful()) {
-						txtRua.setText(webService.getLogradouro());
-						txtBairro.setText(webService.getBairro());
-						txtCidade.setText(webService.getCidade());
-						txtUf.setText(webService.getUf());
-						txtRua.setEditable(false);
-						txtBairro.setEditable(false);
-						txtCidade.setEditable(false);
-						txtUf.setEditable(false);
-					}else {
-						JOptionPane.showMessageDialog(null, "CEP NÃO LOCALIZADO");
-						txtRua.setEditable(true);
-						txtBairro.setEditable(true);
-						txtCidade.setEditable(true);
-						txtUf.setEditable(true);
-					}
-				} catch (Exception e) {
-
-				}
+				Funcionario.webService(txtRua, txtBairro, txtCidade, txtUf, txtCep);
 			}});
 
 		txtCep.setColumns(10);
@@ -240,6 +221,7 @@ public class TelaFuncionario extends JFrame {
 		panel.add(lblLogradouro);
 
 		txtRua = new JTextField();
+		txtRua.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtRua.setEditable(false);
 		txtRua.setColumns(10);
 		txtRua.setBounds(12, 203, 364, 22);
@@ -251,6 +233,7 @@ public class TelaFuncionario extends JFrame {
 		panel.add(label_5);
 
 		txtNum = new JTextField();
+		txtNum.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtNum.setColumns(10);
 		txtNum.setBounds(12, 253, 56, 22);
 		panel.add(txtNum);
@@ -261,6 +244,7 @@ public class TelaFuncionario extends JFrame {
 		panel.add(label_6);
 
 		txtBairro = new JTextField();
+		txtBairro.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtBairro.setEditable(false);
 		txtBairro.setColumns(10);
 		txtBairro.setBounds(85, 253, 144, 22);
@@ -272,6 +256,7 @@ public class TelaFuncionario extends JFrame {
 		panel.add(label_7);
 
 		txtCidade = new JTextField();
+		txtCidade.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtCidade.setEditable(false);
 		txtCidade.setColumns(10);
 		txtCidade.setBounds(241, 253, 163, 22);
@@ -283,6 +268,7 @@ public class TelaFuncionario extends JFrame {
 		panel.add(label_8);
 
 		txtComp = new JTextField();
+		txtComp.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtComp.setColumns(10);
 		txtComp.setBounds(12, 301, 116, 22);
 		panel.add(txtComp);
@@ -293,11 +279,12 @@ public class TelaFuncionario extends JFrame {
 		panel.add(label_9);
 
 		txtDataNasc = new JFormattedTextField();
+		txtDataNasc.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		try {
 			txtDataNasc.setFormatterFactory(new DefaultFormatterFactory(
-				new MaskFormatter("##/##/####")));
+					new MaskFormatter("##/##/####")));
 		} catch (ParseException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 		}
 		txtDataNasc.setColumns(10);
 		txtDataNasc.setBounds(241, 98, 116, 22);
@@ -309,13 +296,13 @@ public class TelaFuncionario extends JFrame {
 		panel.add(label_10);
 
 		txtTel = new JFormattedTextField();
-		txtTel.setText("(19)3392-5758");
+		txtTel.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		try {
 			txtTel.setFormatterFactory(new DefaultFormatterFactory(
-				new MaskFormatter("(##)####-####")));
+					new MaskFormatter("(##)####-####")));
 		} catch (Exception e) {
-			e.printStackTrace();
-		
+			JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
+
 		}
 		txtTel.setColumns(10);
 		txtTel.setBounds(12, 359, 116, 22);
@@ -327,11 +314,12 @@ public class TelaFuncionario extends JFrame {
 		panel.add(label_11);
 
 		txtCel = new JFormattedTextField();
+		txtCel.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		try {
 			txtCel.setFormatterFactory(new DefaultFormatterFactory(
-				new MaskFormatter("(##)#####-####")));
+					new MaskFormatter("(##)#####-####")));
 		} catch (ParseException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 		}
 		txtCel.setColumns(10);
 		txtCel.setBounds(143, 359, 116, 22);
@@ -343,6 +331,7 @@ public class TelaFuncionario extends JFrame {
 		panel.add(label_12);
 
 		txtEmail = new JTextField();
+		txtEmail.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtEmail.setColumns(10);
 		txtEmail.setBounds(12, 415, 247, 22);
 		panel.add(txtEmail);
@@ -353,65 +342,54 @@ public class TelaFuncionario extends JFrame {
 		panel.add(label_13);
 
 		txtUf = new JTextField();
+		txtUf.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtUf.setEditable(false);
 		txtUf.setColumns(10);
 		txtUf.setBounds(416, 253, 38, 22);
 		panel.add(txtUf);
-		
+
 		JLabel lblFuno = new JLabel("Fun\u00E7\u00E3o:");
 		lblFuno.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblFuno.setBounds(114, 131, 56, 16);
 		panel.add(lblFuno);
-		
+
 		txtCrmv = new JTextField();
+		txtCrmv.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtCrmv.setVisible(false);
 		txtCrmv.setBounds(241, 151, 84, 22);
 		panel.add(txtCrmv);
 		txtCrmv.setColumns(10);
-		
-		JLabel lblCrmv = new JLabel("CRMV:");
+
+		lblCrmv = new JLabel("CRMV:");
 		lblCrmv.setVisible(false);
 		lblCrmv.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblCrmv.setBounds(241, 131, 56, 16);
 		panel.add(lblCrmv);
-		
-		JLabel lblValidade = new JLabel("Validade:");
+
+		lblValidade = new JLabel("Validade:");
 		lblValidade.setVisible(false);
 		lblValidade.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblValidade.setBounds(337, 131, 84, 16);
 		panel.add(lblValidade);
-		
+
 		comboFuncao = new JComboBox();
 		comboFuncao.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-			
-				if (comboFuncao.getSelectedItem() .equals("Veterinário")) {
-					lblCrmv.setVisible(true);
-					txtCrmv.setVisible(true);
-					txtCrmv.setEditable(true);
-					lblValidade.setVisible(true);
-					txtValidade.setVisible(true);
-				}else {
-					lblCrmv.setVisible(false);
-					txtCrmv.setVisible(false);
-					txtCrmv.setText("");
-					lblValidade.setVisible(false);
-					txtValidade.setVisible(false);
-					txtValidade.setText("01/01/0001");
-				}
+				Funcionario.funcaoSelecionada(comboFuncao, lblCrmv, txtCrmv, lblValidade, txtValidade);
 			}
 		});
 		comboFuncao.setFont(new Font("Tahoma", Font.BOLD, 13));
-		comboFuncao.setModel(new DefaultComboBoxModel(new String[] {"Auxiliar", "Estagi\u00E1rio", "Secret\u00E1ria(o)", "Veterin\u00E1rio"}));
+		comboFuncao.setModel(new DefaultComboBoxModel(new String[] {"Auxiliar", "Estagi\u00E1rio", "Secret\u00E1ria(o)", "Veterin\u00E1rio(a)"}));
 		comboFuncao.setBounds(114, 151, 116, 22);
 		panel.add(comboFuncao);
-		
+
 		txtValidade = new JFormattedTextField();
+		txtValidade.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		try {
 			txtValidade.setFormatterFactory(new DefaultFormatterFactory(
-				new MaskFormatter("##/##/####")));
+					new MaskFormatter("##/##/####")));
 		} catch (ParseException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 		}
 		txtValidade.setVisible(false);
 		txtValidade.setBounds(337, 151, 116, 22);
@@ -436,8 +414,10 @@ public class TelaFuncionario extends JFrame {
 			public void caretUpdate(CaretEvent arg0) {
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.pesquisarFuncionario(txtBusca, listName);;
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.pesquisarFuncionario(txtBusca, listName);;
+					banco.desconectar();
+				}
 			}
 		});
 		txtBusca.setColumns(10);
@@ -456,49 +436,19 @@ public class TelaFuncionario extends JFrame {
 			public void valueChanged(ListSelectionEvent arg0) {
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.buscarFuncionario(listName, txtNome, txtCpf, txtDataNasc, txtCep, txtRua, txtNum, txtBairro, txtCidade, txtUf, txtComp, txtTel, txtCel, txtEmail, txtID, txtValidade, opMasc, opFem, comboFuncao, txtCrmv);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.buscarFuncionario(listName, txtNome, txtCpf, txtDataNasc, txtCep, txtRua, txtNum, txtBairro, txtCidade, txtUf, txtComp, txtTel, txtCel, txtEmail, txtID, txtValidade, opMasc, opFem, comboFuncao, txtCrmv);
+					banco.desconectar();
+				}
 			}
 		});
 		listName.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					txtNome.setEditable(true);
-					txtCpf.setEditable(true);
-					txtDataNasc.setEditable(true);
-					txtCep.setEditable(true);
-					txtNum.setEditable(true);
-					txtComp.setEditable(true);
-					txtTel.setEditable(true);
-					txtCel.setEditable(true);
-					txtEmail.setEditable(true);
-					btnEditar.setVisible(true);
-					txtCrmv.setEditable(true);
-					txtValidade.setEditable(true);
-					btnSalvar.setVisible(false);
-				
-
+					Funcionario.cliqueTrue(txtNome, txtCpf, txtDataNasc, txtCep, txtNum, txtComp, txtTel, txtCel, txtEmail, txtCrmv, txtValidade, btnEditar, btnSalvar);
 				} else {
-					txtNome.setEditable(false);
-					txtCpf.setEditable(false);
-					txtDataNasc.setEditable(false);
-					txtCep.setEditable(false);
-					txtNum.setEditable(false);
-					txtComp.setEditable(false);
-					txtTel.setEditable(false);
-					txtCel.setEditable(false);
-					txtEmail.setEditable(false);
-					btnEditar.setVisible(false);
-					txtRua.setEditable(false);
-					txtBairro.setEditable(false);
-					txtCidade.setEditable(false);
-					txtUf.setEditable(false);
-					comboFuncao.setEditable(false);
-					txtCrmv.setEditable(false);
-					txtValidade.setEditable(false);
-					btnSalvar.setVisible(true);
-					btnEditar.setVisible(true);
+					Funcionario.cliqueFalse(txtNome, txtCpf, txtDataNasc, txtCep, txtNum, txtComp, txtTel, txtCel, txtEmail, txtCrmv, txtValidade, btnEditar, btnSalvar);
 				}
 			}
 		}
@@ -507,46 +457,18 @@ public class TelaFuncionario extends JFrame {
 		panel_1.add(listName);
 
 		JButton btnNovo = new JButton("Novo");
+		btnNovo.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnNovo.setMnemonic('N');
 		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				txtNome.setText("");
-				txtCpf.setText("");
-				txtCep.setText("");
-				txtDataNasc.setText("");
-				txtRua.setText("");
-				txtNum.setText("");
-				txtBairro.setText("");
-				txtCidade.setText("");
-				txtUf.setText("");
-				txtComp.setText("");
-				txtTel.setText("");
-				txtCel.setText("");
-				txtEmail.setText("");
-				txtCrmv.setText("");
-				txtValidade.setText("");
-				txtTel.setText("(19)3392-5758");
-				comboFuncao.setSelectedItem("Secretária(o)");
-				txtNome.setEditable(true);
-				txtCpf.setEditable(true);
-				txtDataNasc.setEditable(true);
-				txtCep.setEditable(true);
-				txtNum.setEditable(true);
-				txtComp.setEditable(true);
-				txtTel.setEditable(true);
-				txtCel.setEditable(true);
-				txtEmail.setEditable(true);
-				txtValidade.setEditable(true);
-				btnSalvar.setVisible(true);
-				btnEditar.setVisible(false);
-				listName.clearSelection();
+				Funcionario.novo(txtNome, txtCpf, txtDataNasc, txtRua, txtBairro, txtCidade, txtUf, comboFuncao, txtCep, txtNum, txtComp, txtTel, txtCel, txtEmail, txtCrmv, txtValidade, listName, btnEditar, btnSalvar);
 			}
 		});
 		btnNovo.setBounds(526, 484, 97, 25);
 		contentPane.add(btnNovo);
 
-
 		JButton btnVoltar = new JButton("Voltar");
+		btnVoltar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnVoltar.setMnemonic('V');
 		btnVoltar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -557,32 +479,20 @@ public class TelaFuncionario extends JFrame {
 		contentPane.add(btnVoltar);
 
 		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnExcluir.setMnemonic('X');
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente excluir?", "Exluir",JOptionPane.YES_OPTION);
 				if (resposta == JOptionPane.YES_OPTION) {
-
 					BancoDeDados banco = new BancoDeDados();
 					banco.conectar();
-					banco.excluirFuncionario(txtID);;
-					txtNome.setText("");
-					txtCpf.setText("");
-					txtCep.setText("");
-					txtDataNasc.setText("");
-					txtRua.setText("");
-					txtNum.setText("");
-					txtBairro.setText("");
-					txtCidade.setText("");
-					txtUf.setText("");
-					txtComp.setText("");
-					txtTel.setText("");
-					txtCel.setText("");
-					txtEmail.setText("");
-					banco.pesquisarFuncionario(txtBusca, listName);
-					banco.desconectar();
-				} else if (resposta == JOptionPane.NO_OPTION) {
-
+					if(banco.estaConectado() == true) {
+						banco.excluirFuncionario(txtID);;
+						Funcionario.novo(txtNome, txtCpf, txtDataNasc, txtRua, txtBairro, txtCidade, txtUf, comboFuncao, txtCep, txtNum, txtComp, txtTel, txtCel, txtEmail, txtCrmv, txtValidade, listName, btnEditar, btnSalvar);
+						banco.pesquisarFuncionario(txtBusca, listName);
+						banco.desconectar();
+					}
 				}
 			}
 		});
@@ -590,77 +500,29 @@ public class TelaFuncionario extends JFrame {
 		contentPane.add(btnExcluir);
 
 		btnSalvar = new JButton("Salvar");
+		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnSalvar.setMnemonic('S');
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
-
 				int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente Salvar?", "title",JOptionPane.YES_OPTION);
 				try {
 					if (resposta == JOptionPane.YES_OPTION) {
-						BancoDeDados banco = new BancoDeDados();
-						banco.conectar();
-						String dia = TelaFuncionario.txtDataNasc.getText().substring(0,2);
-						String mes = TelaFuncionario.txtDataNasc.getText().substring(3,5);
-						String ano = TelaFuncionario.txtDataNasc.getText().substring(6);
-						String datasql = ano+"-"+mes+"-"+dia;
-						
-						String dia2 = TelaFuncionario.txtValidade.getText().substring(0,2);
-						String mes2 = TelaFuncionario.txtValidade.getText().substring(3,5);
-						String ano2 = TelaFuncionario.txtValidade.getText().substring(6);
-						String validade = ano2+"-"+mes2+"-"+dia2;
-						String d = null;
-						if (opMasc.isSelected()) {
-							d = "Masculino";
-						}else if (opFem.isSelected()) {
-							d = "Feminino";
+						if(Funcionario.verificacao(txtNome, txtCpf, opMasc, opFem, txtDataNasc, txtRua, txtBairro, txtCidade, txtUf, txtCep, comboFuncao, txtCrmv, txtValidade, txtNum, txtCel, txtEmail) == true) {
+							BancoDeDados banco = new BancoDeDados();
+							banco.conectar();
+							if(banco.estaConectado() == true) {
+								if(banco.verificarCpf(txtCpf) == true) {
+									banco.inserirFuncionario(txtNome, txtCpf, Funcionario.funcao(comboFuncao, txtValidade), txtCrmv, Funcionario.data(txtValidade), Funcionario.sexo(opMasc), Funcionario.data(txtDataNasc).intern(), txtCep, txtRua, txtNum, txtBairro , txtCidade, txtUf, txtComp, txtTel, txtCel, txtEmail);
+									JOptionPane.showMessageDialog(null,"Cadastro realizado com sucesso!");
+									Funcionario.novo(txtNome, txtCpf, txtDataNasc, txtRua, txtBairro, txtCidade, txtUf, comboFuncao, txtCep, txtNum, txtComp, txtTel, txtCel, txtEmail, txtCrmv, txtValidade, listName, btnEditar, btnSalvar);
+									banco.pesquisarFuncionario(txtBusca, listName);
+									banco.desconectar();
+								}
+							}
 						}
-						
-						String c = null;
-						if (comboFuncao.getSelectedItem() .equals("Veterinário")) {
-							c = "Veterinário";
-						}
-						if (comboFuncao.getSelectedItem() .equals("Auxiliar")) {
-							c = "Auxiliar";
-							txtValidade.setText("01/01/0001");
-						}
-						if (comboFuncao.getSelectedItem() .equals("Estagiário")) {
-							c = "Estagiário";
-						}
-						
-						if (comboFuncao.getSelectedItem() .equals("Secretária(o)")) {
-							c = "Secretária(o)";
-							txtValidade.setText("01/01/0001");
-						}
-						banco.inserirFuncionario(txtNome.getText(), txtCpf.getText(),c, txtCrmv.getText(),validade, d, datasql.intern(), txtCep.getText(), txtRua.getText(), txtNum.getText(), txtBairro.getText() , txtCidade.getText(), txtUf.getText(), txtComp.getText(), txtTel.getText(), txtCel.getText(), txtEmail.getText());
-						
-						JOptionPane.showMessageDialog(null,"Cadastro realizado com sucesso!");
-
-						txtNome.setText("");
-						txtCpf.setText("");
-						txtCep.setText("");
-						txtDataNasc.setText("");
-						txtRua.setText("");
-						txtNum.setText("");
-						txtBairro.setText("");
-						txtCidade.setText("");
-						txtUf.setText("");
-						txtComp.setText("");
-						txtTel.setText("");
-						txtCel.setText("");
-						txtEmail.setText("");
-						txtValidade.setText("");
-						txtCrmv.setText("");
-						comboFuncao.setSelectedItem("Secretária(o)");
-						banco.pesquisarFuncionario(txtBusca, listName);
-						banco.desconectar();
-					} else if (resposta == JOptionPane.NO_OPTION) {
-						JOptionPane.showMessageDialog(null, "Cadastro não Salvo");
-					
 					}
-
 				} catch (Exception e) {
-
+					JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 				}
 			}});
 		btnSalvar.setBounds(795, 522, 97, 25);
@@ -678,24 +540,29 @@ public class TelaFuncionario extends JFrame {
 		txtID.setBounds(549, 40, 116, 22);
 		contentPane.add(txtID);
 		txtID.setColumns(10);
-		
-				btnEditar = new JButton("Editar");
-				btnEditar.setBounds(795, 522, 97, 25);
-				contentPane.add(btnEditar);
-				btnEditar.setVisible(false);
-				btnEditar.setMnemonic('E');
-				
-				
-				btnEditar.setVisible(false);
-				btnEditar.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						BancoDeDados banco = new BancoDeDados();
-						banco.conectar();
-						banco.editarFuncionario(txtDataNasc, txtValidade, opMasc, opFem, comboFuncao, txtNome, txtCpf, txtCrmv, txtCep, txtRua, txtNum, txtBairro, txtCidade, txtUf, txtComp, txtTel, txtCel, txtEmail, txtID);
-						banco.pesquisarFuncionario(txtBusca, listName);
-						banco.desconectar();
+
+		btnEditar = new JButton("Editar");
+		btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnEditar.setBounds(795, 522, 97, 25);
+		contentPane.add(btnEditar);
+		btnEditar.setVisible(false);
+		btnEditar.setMnemonic('E');
+
+		btnEditar.setVisible(false);
+		btnEditar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(Funcionario.verificacao(txtNome, txtCpf, opMasc, opFem, txtDataNasc, txtRua, txtBairro, txtCidade, txtUf, txtCep, comboFuncao, txtCrmv, txtValidade, txtNum, txtCel, txtEmail) == true) {
+					BancoDeDados banco = new BancoDeDados();
+					banco.conectar();
+					if(banco.estaConectado() == true) {
+						if(banco.verificarCpf(txtCpf) == true) {
+							banco.editarFuncionario(txtDataNasc, txtValidade, opMasc, opFem, comboFuncao, txtNome, txtCpf, txtCrmv, txtCep, txtRua, txtNum, txtBairro, txtCidade, txtUf, txtComp, txtTel, txtCel, txtEmail, txtID);
+							banco.pesquisarFuncionario(txtBusca, listName);
+							banco.desconectar();
+						}
 					}
-				});
+				}
+			}
+		});
 	}
 }
-

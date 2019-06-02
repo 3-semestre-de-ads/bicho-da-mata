@@ -19,12 +19,15 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+
+import controller.Calculadora;
 /**
  * Nesta classe sera desenvolvida uma calculadora de doses de medicamentos que os veterinarios utilizam 
  * para saber qual a dose necessaria para cada animal de acordo com o seu peso, dose do farmaco e concentracao.
  * @author mauri
  *
  */
+
 public class TelaCalculadora extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -43,23 +46,25 @@ public class TelaCalculadora extends JFrame {
 					TelaCalculadora frame = new TelaCalculadora();
 					frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 				}
 			}
 		});
 	}
 
-	
 	/**
 	 * Create the frame.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public TelaCalculadora() {
+		
 		setResizable(false);
 		setTitle("Bicho da Mata - Calculadora");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaCalculadora.class.getResource("/imagens/fundoBichoBanco.png")));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 602, 351);
+		setLocationRelativeTo(null);
+		
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -84,6 +89,7 @@ public class TelaCalculadora extends JFrame {
 		panel.add(lblPeso);
 
 		txbPesoAnimal_1 = new JTextField();
+		txbPesoAnimal_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txbPesoAnimal_1.setBounds(190, 39, 87, 22);
 		panel.add(txbPesoAnimal_1);
 		txbPesoAnimal_1.setColumns(10);
@@ -99,6 +105,7 @@ public class TelaCalculadora extends JFrame {
 		panel.add(lblDoseDoFrmaco);
 
 		txbDoseFarmaco_1 = new JTextField();
+		txbDoseFarmaco_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txbDoseFarmaco_1.setBounds(190, 98, 87, 22);
 		panel.add(txbDoseFarmaco_1);
 		txbDoseFarmaco_1.setColumns(10);
@@ -116,6 +123,7 @@ public class TelaCalculadora extends JFrame {
 		panel.add(lblConcentraoDoFrmaco);
 
 		txbConcentracaoFarmaco_1 = new JTextField();
+		txbConcentracaoFarmaco_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txbConcentracaoFarmaco_1.setToolTipText("");
 		txbConcentracaoFarmaco_1.setColumns(10);
 		txbConcentracaoFarmaco_1.setBounds(190, 158, 87, 22);
@@ -127,6 +135,7 @@ public class TelaCalculadora extends JFrame {
 		panel.add(cbxUnidadeConcentracao);
 
 		JButton btnVoltar = new JButton("Voltar");
+		btnVoltar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnVoltar.setMnemonic('V');
 		btnVoltar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -136,7 +145,7 @@ public class TelaCalculadora extends JFrame {
 		btnVoltar.setBounds(12, 227, 97, 25);
 		panel.add(btnVoltar);
 
-		JLabel lblRes = new JLabel("Resposta");
+		JLabel lblRes = new JLabel("");
 		lblRes.setBounds(400, 248, 177, 37);
 		contentPane.add(lblRes);
 		lblRes.setFont(new Font("Tahoma", Font.BOLD, 20));
@@ -145,89 +154,14 @@ public class TelaCalculadora extends JFrame {
 		 * dos medicamento. as formulas foram adiquiridas no site http://www.prontupet.com/calculadora/index.htm.
 		 */
 		JButton btnCalcular = new JButton("Calcular");
+		btnCalcular.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnCalcular.setMnemonic('C');
 		btnCalcular.addActionListener(new ActionListener() {
-		
-
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					double n1 = Double.parseDouble(txbConcentracaoFarmaco_1.getText());
-					double n2 = Double.parseDouble(txbDoseFarmaco_1.getText());
-					double n3 = Double.parseDouble(txbPesoAnimal_1.getText());
-
-					double PesoAnimal = 0, DoseFarmaco = 0, ConcentracaoFarmaco = 0;
-					double Medicacao = 0;
-
-					if (n1 == 0 || n2 == 0 || n3 == 0)
-					{
-						JOptionPane.showMessageDialog(null, "Campos Inválidos");
-					}
-
-				else
-					{
-						PesoAnimal = Double.parseDouble(txbPesoAnimal_1.getText());
-						DoseFarmaco = Double.parseDouble(txbDoseFarmaco_1.getText());
-						ConcentracaoFarmaco = Double.parseDouble(txbConcentracaoFarmaco_1.getText());
-
-						if (PesoAnimal <= 0 || DoseFarmaco <= 0 || ConcentracaoFarmaco <= 0)
-							JOptionPane.showMessageDialog(null, "Impossível realizar calculos com números negativos");
-						else
-						{
-							if (cbxUnidadeDose.getSelectedItem() == "Mg" && cbxUnidadeConcentracao.getSelectedItem() == "G")
-							{
-								Medicacao = (PesoAnimal * DoseFarmaco) / (1000 / ConcentracaoFarmaco);
-							}
-							else if (cbxUnidadeDose.getSelectedItem() == "Mg" && cbxUnidadeConcentracao.getSelectedItem() == "Mg")
-							{
-								Medicacao = (PesoAnimal * DoseFarmaco) / ConcentracaoFarmaco;
-							}
-							else if (cbxUnidadeDose.getSelectedItem() == "Mg" && cbxUnidadeConcentracao.getSelectedItem() == "Mcg")
-							{
-								Medicacao = (PesoAnimal * DoseFarmaco) / (ConcentracaoFarmaco * 0.001);
-							}
-							else if (cbxUnidadeDose.getSelectedItem() == "Mg" && cbxUnidadeConcentracao.getSelectedItem() == "%")
-							{
-								Medicacao = (PesoAnimal * DoseFarmaco) / (ConcentracaoFarmaco * 10);
-							}
-							else if (cbxUnidadeDose.getSelectedItem() == "Mcg" && cbxUnidadeConcentracao.getSelectedItem() == "G")
-							{
-								Medicacao = (PesoAnimal * (DoseFarmaco * 0.001)) / (1000 / ConcentracaoFarmaco);
-							}
-							else if (cbxUnidadeDose.getSelectedItem() == "Mcg" && cbxUnidadeConcentracao.getSelectedItem() == "Mg")
-							{
-								Medicacao = (PesoAnimal * (DoseFarmaco * 0.001)) / ConcentracaoFarmaco;
-							}
-							else if (cbxUnidadeDose.getSelectedItem() == "Mcg" && cbxUnidadeConcentracao.getSelectedItem() == "Mcg")
-							{
-								Medicacao = (PesoAnimal * (DoseFarmaco * 0.001)) / (ConcentracaoFarmaco * 0.001);
-							}
-							else if (cbxUnidadeDose.getSelectedItem() == "Mcg" && cbxUnidadeConcentracao.getSelectedItem() == "%")
-							{
-								Medicacao = (PesoAnimal * (DoseFarmaco * 0.001)) / (ConcentracaoFarmaco * 10);
-							}
-
-							if (cbxUnidadeConcentracao.getSelectedItem() == "" || cbxUnidadeDose.getSelectedItem() == "")
-							{
-								JOptionPane.showMessageDialog(null, "Unidades Inválidas!");
-							}
-							
-							else
-
-								lblRes.setText(Medicacao + "ML");
-							
-						}
-					}
-				} catch(NumberFormatException e) {
-					JOptionPane.showMessageDialog(null, "Erro de conversão!");
-				}
-				
-				
-		}
-
-
-	});
+				Calculadora.calcular(txbConcentracaoFarmaco_1, txbDoseFarmaco_1, txbPesoAnimal_1, cbxUnidadeDose, cbxUnidadeConcentracao, lblRes);
+			}
+		});
 		btnCalcular.setBounds(262, 227, 97, 25);
 		panel.add(btnCalcular);
-
 	}
 }

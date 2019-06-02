@@ -2,9 +2,22 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/mauri/Desktop/BuscaCep/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="jgoodies-forms-1.8.0.jar" sourcepath="jgoodies-forms-1.8.0-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/mauri/Desktop/mysql-connector-java-8.0.15/mysql-connector-java-8.0.15.jar"/>
-	<classpathentry kind="lib" path="TimerBean.jar"/>
+	<classpathentry kind="lib" path="dom4j-2.1.1.jar"/>
+	<classpathentry kind="lib" path="jcalendar-1.4.jar"/>
+	<classpathentry kind="lib" path="jgoodies-common-1.2.0.jar"/>
+	<classpathentry kind="lib" path="jgoodies-common-1.8.0.jar"/>
+	<classpathentry kind="lib" path="jgoodies-forms-1.8.0-sources.jar"/>
+	<classpathentry kind="lib" path="jgoodies-forms-1.8.0.jar"/>
+	<classpathentry kind="lib" path="jgoodies-looks-2.4.1.jar"/>
+	<classpathentry kind="lib" path="mysql-connector-java-8.0.15.jar"/>
+	<classpathentry kind="lib" path="jasperreports-6.8.0.jar"/>
+	<classpathentry kind="lib" path="jasperreports-annotation-processors-6.8.0.jar"/>
+	<classpathentry kind="lib" path="jasperreports-chart-customizers-6.8.0.jar"/>
+	<classpathentry kind="lib" path="jasperreports-chart-themes-6.8.0.jar"/>
+	<classpathentry kind="lib" path="jasperreports-custom-visualization-6.8.0.jar"/>
+	<classpathentry kind="lib" path="jasperreports-fonts-6.8.0.jar"/>
+	<classpathentry kind="lib" path="jasperreports-functions-6.8.0.jar"/>
+	<classpathentry kind="lib" path="jasperreports-javaflow-6.8.0.jar"/>
+	<classpathentry kind="lib" path="jasperreports-metadata-6.8.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

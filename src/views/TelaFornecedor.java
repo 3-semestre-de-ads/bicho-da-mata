@@ -34,7 +34,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 
-import service.BancoDeDados;
+import controller.Fornecedor;
+import model.BancoDeDados;
 /**
  * Esta classe foi criado para realizar o cadastro dos fornecedores da clinica bicho da mata, com a finalidade de organizar o contato com os fornecedores
  * pois atualmente a clinica utilzia uma agenda comum para armazenamento dos dados.
@@ -67,17 +68,14 @@ public class TelaFornecedor extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-
 				try {
 					TelaFornecedor frame = new TelaFornecedor();
 					frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 				}
 			}
 		});
-
-
 	}
 
 	/**
@@ -90,13 +88,13 @@ public class TelaFornecedor extends JFrame {
 		setTitle("Bicho da Mata - Fornecedores");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 949, 600);
+		setLocationRelativeTo(null);
+
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
-
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(255, 255, 255));
@@ -116,38 +114,42 @@ public class TelaFornecedor extends JFrame {
 		panel.add(lblCnpj);
 
 		txtNome = new JTextField();
+		txtNome.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtNome.setBounds(12, 44, 219, 22);
 		panel.add(txtNome);
 		txtNome.setColumns(10);
 
 		txtCnpj = new JFormattedTextField();
+		txtCnpj.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		try {
 			txtCnpj.setFormatterFactory(new DefaultFormatterFactory(
 					new MaskFormatter("###.###.###/####-##")));
 		} catch (ParseException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 		}
 		txtCnpj.setColumns(10);
 		txtCnpj.setBounds(264, 44, 219, 22);
 		panel.add(txtCnpj);
 
 		txtTelefone = new JFormattedTextField();
+		txtTelefone.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		try {
 			txtTelefone.setFormatterFactory(new DefaultFormatterFactory(
 					new MaskFormatter("(##)#####-####")));
 		} catch (ParseException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 		}
 		txtTelefone.setColumns(10);
 		txtTelefone.setBounds(264, 102, 219, 22);
 		panel.add(txtTelefone);
 
-		JLabel lblTelefone = new JLabel("Telefone:");
-		lblTelefone.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTelefone.setBounds(264, 79, 128, 26);
-		panel.add(lblTelefone);
+		JLabel lblCelular = new JLabel("Celular:");
+		lblCelular.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblCelular.setBounds(264, 79, 128, 26);
+		panel.add(lblCelular);
 
 		txtContato = new JTextField();
+		txtContato.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtContato.setColumns(10);
 		txtContato.setBounds(12, 102, 219, 22);
 		panel.add(txtContato);
@@ -184,6 +186,7 @@ public class TelaFornecedor extends JFrame {
 		panel.add(lblEmail);
 
 		txtEmail = new JTextField();
+		txtEmail.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtEmail.setColumns(10);
 		txtEmail.setBounds(12, 160, 219, 22);
 		panel.add(txtEmail);
@@ -193,8 +196,6 @@ public class TelaFornecedor extends JFrame {
 		lblFornecedor.setBounds(35, 13, 164, 38);
 		contentPane.add(lblFornecedor);
 
-
-
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(Color.WHITE);
 		panel_2.setBorder(new TitledBorder(null, "Data", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -202,14 +203,13 @@ public class TelaFornecedor extends JFrame {
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 
-
-
 		txtData = new JTextField();
 		txtData.addCaretListener(new CaretListener() {
 			public void caretUpdate(CaretEvent arg0) {
 
 			}
 		});
+
 		txtData.setEditable(false);
 		txtData.setFont(new Font("Tahoma", Font.BOLD, 13));
 		txtData.setBounds(12, 24, 116, 22);
@@ -218,7 +218,6 @@ public class TelaFornecedor extends JFrame {
 		txtData.setText(formatoBr.format(d));
 
 		txtData.setColumns(10);
-
 
 		txtID = new JTextField();
 		txtID.setVisible(false);
@@ -246,8 +245,10 @@ public class TelaFornecedor extends JFrame {
 			public void caretUpdate(CaretEvent arg0) {
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.pesquisarFornecedor(txtBusca, listName);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.pesquisarFornecedor(txtBusca, listName);
+					banco.desconectar();
+				}
 			}
 		});
 		txtBusca.setColumns(10);
@@ -259,63 +260,33 @@ public class TelaFornecedor extends JFrame {
 			public void valueChanged(ListSelectionEvent e) {
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.inserirFornecedor(listName, txtDescricao, txtData, txtNome, txtCnpj, txtContato, txtTelefone, txtEmail, txtID);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.buscarFornecedor(listName, txtDescricao, txtData, txtNome, txtCnpj, txtContato, txtTelefone, txtEmail, txtID);
+					banco.desconectar();
+				}
 			}
 		});
 		listName.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					txtNome.setEditable(true);
-					txtCnpj.setEditable(true);
-					txtContato.setEditable(true);
-					txtTelefone.setEditable(true);
-					txtDescricao.setEditable(true);
-					txtEmail.setEditable(true);
-					btnEditar.setVisible(true);
-					tbnSalvar.setVisible(false);
-
+					Fornecedor.cliqueTrue(txtNome, txtCnpj, txtContato, txtTelefone, txtDescricao, txtEmail, btnEditar, tbnSalvar);
 				} else {
-					txtNome.setEditable(false);
-					txtCnpj.setEditable(false);
-					txtContato.setEditable(false);
-					txtTelefone.setEditable(false);
-					txtDescricao.setEditable(false);
-					txtEmail.setEditable(false);
-					btnEditar.setVisible(false);
-					tbnSalvar.setVisible(true);
+					Fornecedor.cliqueFalse(txtNome, txtCnpj, txtContato, txtTelefone, txtDescricao, txtEmail, btnEditar, tbnSalvar);
 				}
-
 			}
 		});
 		listName.setBounds(12, 58, 342, 303);
 		panel_3.add(listName);
 
 		JButton btnNovo = new JButton("Novo");
+		btnNovo.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnNovo.setMnemonic('N');
 				btnNovo.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						txtNome.setText("");
-						txtCnpj.setText("");
-						txtContato.setText("");
-						txtTelefone.setText("");
-						txtDescricao.setText("");
-						txtEmail.setText("");
-						txtNome.setEditable(true);
-						txtCnpj.setEditable(true);
-						txtContato.setEditable(true);
-						txtTelefone.setEditable(true);
-						txtDescricao.setEditable(true);
-						txtEmail.setEditable(true);
-						txtData.setText(formatoBr.format(d));
-						tbnSalvar.setVisible(true);
-						btnEditar.setVisible(false);
-						listName.clearSelection();
-
-
+						Fornecedor.novo(txtNome, txtCnpj, txtContato, txtTelefone, txtDescricao, txtEmail, txtData, btnEditar, tbnSalvar, listName);
 					}
 				});
 			}
@@ -325,6 +296,7 @@ public class TelaFornecedor extends JFrame {
 		contentPane.add(btnNovo);
 
 		JButton btnVoltar = new JButton("Voltar");
+		btnVoltar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnVoltar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -335,6 +307,7 @@ public class TelaFornecedor extends JFrame {
 		contentPane.add(btnVoltar);
 
 		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -343,17 +316,12 @@ public class TelaFornecedor extends JFrame {
 
 					BancoDeDados banco = new BancoDeDados();
 					banco.conectar();
-					banco.excluirFornecedor(txtID);
-					txtNome.setText("");
-					txtCnpj.setText("");
-					txtContato.setText("");
-					txtTelefone.setText("");
-					txtDescricao.setText("");
-					txtEmail.setText("");
-					banco.pesquisarFornecedor(txtBusca, listName);
-					banco.desconectar();
-				} else if (resposta == JOptionPane.NO_OPTION) {
-
+					if(banco.estaConectado() == true) {
+						banco.excluirFornecedor(txtID);
+						Fornecedor.novo(txtNome, txtCnpj, txtContato, txtTelefone, txtDescricao, txtEmail, txtData, btnEditar, tbnSalvar, listName);
+						banco.pesquisarFornecedor(txtBusca, listName);
+						banco.desconectar();
+					}
 				}
 			}
 		});
@@ -362,37 +330,28 @@ public class TelaFornecedor extends JFrame {
 		contentPane.add(btnExcluir);
 
 		tbnSalvar = new JButton("Salvar");
+		tbnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		tbnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente Salvar?", "title",JOptionPane.YES_OPTION);
 				try {
 
 					if (resposta == JOptionPane.YES_OPTION) {
-						BancoDeDados banco = new BancoDeDados();
-						banco.conectar();
-						String dia = TelaFornecedor.txtData.getText().substring(0,2);
-						String mes = TelaFornecedor.txtData.getText().substring(3,5);
-						String ano = TelaFornecedor.txtData.getText().substring(6);
-						String datasql = ano+"-"+mes+"-"+dia;
-
-						banco.inserirContato(datasql.intern(), txtNome, txtCnpj, txtContato, txtTelefone, txtEmail, txtDescricao);
-
-						JOptionPane.showMessageDialog(null,"Cadastro realizado com sucesso!");
-
-						txtNome.setText("");
-						txtCnpj.setText("");
-						txtContato.setText("");
-						txtTelefone.setText("");
-						txtDescricao.setText("");
-						txtEmail.setText("");
-						banco.pesquisarFornecedor(txtBusca, listName);
-						banco.desconectar();
-					} else if (resposta == JOptionPane.NO_OPTION) {
-						JOptionPane.showMessageDialog(null, "Cadastro não Salvo");
+						if(Fornecedor.verificacao(txtNome, txtCnpj, txtContato, txtTelefone, txtDescricao, txtEmail, txtDescricao) == true) {
+							BancoDeDados banco = new BancoDeDados();
+							banco.conectar();
+							if(banco.estaConectado() == true) {
+								if(banco.verificarCnpj(txtCnpj) == true) {
+									banco.inserirContato(Fornecedor.data(txtData).intern(), txtNome, txtCnpj, txtContato, txtTelefone, txtEmail, txtDescricao);
+									Fornecedor.novo(txtNome, txtCnpj, txtContato, txtTelefone, txtDescricao, txtEmail, txtData, btnEditar, tbnSalvar, listName);
+									banco.pesquisarFornecedor(txtBusca, listName);
+									banco.desconectar();
+								}
+							}
+						}
 					}
-
 				} catch (Exception ee) {
-
+					JOptionPane.showMessageDialog(null, "Erro: " + ee.toString());
 				}
 			}});
 
@@ -400,6 +359,7 @@ public class TelaFornecedor extends JFrame {
 		tbnSalvar.setBounds(834, 516, 97, 25);
 		contentPane.add(tbnSalvar);
 		btnEditar = new JButton("Editar");
+		btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnEditar.setBounds(834, 516, 97, 25);
 		contentPane.add(btnEditar);
 		btnEditar.setMnemonic('E');
@@ -408,19 +368,18 @@ public class TelaFornecedor extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente editar?", "Editar",JOptionPane.YES_OPTION);
 				if (resposta == JOptionPane.YES_OPTION) {
-					BancoDeDados banco = new BancoDeDados();
-					banco.conectar();
-					banco.editarFornecedor(txtData, txtNome, txtCnpj, txtContato, txtTelefone, txtEmail, txtDescricao, txtID);
-					banco.pesquisarFornecedor(txtBusca, listName);
-					txtNome.setEditable(true);
-					txtCnpj.setEditable(true);
-					txtContato.setEditable(true);
-					txtTelefone.setEditable(true);
-					txtEmail.setEditable(true);
-					//txtDescricao.setEditable(true);
-					banco.desconectar();
-				} else if (resposta == JOptionPane.NO_OPTION) {
-
+					if(Fornecedor.verificacao(txtNome, txtCnpj, txtContato, txtTelefone, txtDescricao, txtEmail, txtDescricao) == true) {
+						BancoDeDados banco = new BancoDeDados();
+						banco.conectar();
+						if(banco.estaConectado() == true) {
+							if(banco.verificarCnpj(txtCnpj) == true) {
+								banco.editarFornecedor(txtData, txtNome, txtCnpj, txtContato, txtTelefone, txtEmail, txtDescricao, txtID);
+								banco.pesquisarFornecedor(txtBusca, listName);
+								Fornecedor.cliqueTrue(txtNome, txtCnpj, txtContato, txtTelefone, txtDescricao, txtEmail, btnEditar, tbnSalvar);
+								banco.desconectar();
+							}
+						}
+					}
 				}
 			}
 		});

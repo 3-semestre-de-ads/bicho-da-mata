@@ -31,7 +31,8 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import service.BancoDeDados;
+import controller.Ficha;
+import model.BancoDeDados;
 
 /**
  * A Classe TelaFicha sera o layout para realizar a inserção dos dados do resultado de cada consulta, atraves dos metodos invocados na classe BancoDeDados
@@ -68,6 +69,7 @@ public class TelaFicha extends JFrame {
 	public static TextArea txtHistorico;
 	public static TextArea txtDia;
 	public static JButton btnEditar;
+
 	/**
 	 * Launch the application.
 	 */
@@ -79,7 +81,7 @@ public class TelaFicha extends JFrame {
 					TelaFicha frame = new TelaFicha();
 					frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 				}
 			}
 		});
@@ -96,6 +98,8 @@ public class TelaFicha extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaFicha.class.getResource("/imagens/fundoBichoBanco.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 949, 600);
+		setLocationRelativeTo(null);
+
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -105,13 +109,16 @@ public class TelaFicha extends JFrame {
 		btnEditar = new JButton("Editar");
 		btnEditar.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnEditar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
+			public void actionPerformed(ActionEvent arg0) {			
+				if(Ficha.verificacao(txtDia, txtHistorico, txtPeso, comboVet) == true) {
 					BancoDeDados banco = new BancoDeDados();
 					banco.conectar();
-					banco.editarFicha(txtAnimal, txtIdVacina, txtIdVet, txtPeso, txtDia, txtHistorico, txtIdFicha);
-					banco.desconectar();
-				}}
+					if(banco.estaConectado() == true) {
+						banco.editarFicha(txtAnimal, txtIdVet, txtPeso, txtDia, txtHistorico, txtIdFicha);
+						banco.desconectar();
+					}
+				}
+			}}
 				);
 		btnEditar.setVisible(false);
 		btnEditar.setBounds(818, 516, 97, 25);
@@ -136,11 +143,10 @@ public class TelaFicha extends JFrame {
 		panel_1.add(lblPeso);
 
 		txtPeso = new JTextField();
-		txtPeso.setFont(new Font("Tahoma", Font.BOLD, 13));
+		txtPeso.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtPeso.setColumns(10);
 		txtPeso.setBounds(12, 122, 116, 22);
 		panel_1.add(txtPeso);
-		Date d = new Date();
 
 		JLabel lblVacinas = new JLabel("Vacinas:");
 		lblVacinas.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -155,7 +161,7 @@ public class TelaFicha extends JFrame {
 		txtDia = new TextArea();
 		txtDia.setFont(new Font("Monospaced", Font.BOLD, 12));
 		setForeground(new Color(255, 000, 51));
-		txtDia.setBackground(new Color(0, 204, 102));
+		txtDia.setBackground(new Color(153, 255, 153));
 		txtDia.setBounds(12, 343, 302, 97);
 		panel_1.add(txtDia);
 
@@ -166,7 +172,6 @@ public class TelaFicha extends JFrame {
 
 		txtDono = new JTextField();
 		txtDono.setFont(new Font("Tahoma", Font.BOLD, 13));
-		txtDono.setEnabled(false);
 		txtDono.setEditable(false);
 		txtDono.setColumns(10);
 		txtDono.setBounds(13, 58, 172, 22);
@@ -178,8 +183,7 @@ public class TelaFicha extends JFrame {
 		panel_1.add(lblPet);
 
 		txtNome = new JTextField();
-		txtNome.setEnabled(false);
-		txtNome.setEditable(true);
+		txtNome.setEditable(false);
 		txtNome.setFont(new Font("Tahoma", Font.BOLD, 13));
 		txtNome.setColumns(10);
 		txtNome.setBounds(244, 58, 172, 22);
@@ -207,8 +211,10 @@ public class TelaFicha extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.setIDVet(comboVet, txtIdVet);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.setIDVet(comboVet, txtIdVet);
+					banco.desconectar();
+				}
 			}
 		});
 		comboVet.setBounds(244, 122, 172, 22);
@@ -223,7 +229,7 @@ public class TelaFicha extends JFrame {
 		txtHistorico.addMouseListener(new MouseAdapter() {
 		});
 		txtHistorico.setFont(new Font("Monospaced", Font.BOLD, 12));
-		txtHistorico.setBackground(new Color(0, 204, 102));
+		txtHistorico.setBackground(new Color(153, 255, 153));
 		txtHistorico.setBounds(333, 203, 221, 237);
 		panel_1.add(txtHistorico);
 
@@ -240,26 +246,15 @@ public class TelaFicha extends JFrame {
 
 		JButton btnAdd = new JButton("Add");
 		btnAdd.setFont(new Font("Tahoma", Font.BOLD, 13));
-		/*	btnAdd.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent arg0) {
-				BancoDeDados banco = new BancoDeDados();
-				banco.conectar();
-				banco.pesquisarVacina();
-				banco.desconectar();
-			}
-		});*/
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				String s = JOptionPane.showInputDialog("Data?");
-				String dia = s.substring(0,2);
-				String mes = s.substring(3,5);
-				String ano = s.substring(6);
-				String datasql = ano+"-"+mes+"-"+dia;
-				banco.inserirVacina(comboVacina, txtAnimal, datasql);
-				banco.pesquisarVacina(txtAnimal, listVacina, listData);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.inserirVacina(comboVacina, txtAnimal, Ficha.data(JOptionPane.showInputDialog("Data?")));
+					banco.pesquisarVacina(txtAnimal, listVacina, listData);
+					banco.desconectar();
+				}
 			}
 		});
 		btnAdd.setBounds(157, 192, 85, 25);
@@ -270,8 +265,10 @@ public class TelaFicha extends JFrame {
 			public void valueChanged(ListSelectionEvent e) {
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.inserirVacinaId(listVacina, txtIdVacina);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.inserirVacinaId(listVacina, txtIdVacina);
+					banco.desconectar();
+				}
 			}
 		});
 		listVacina.setValueIsAdjusting(true);
@@ -307,9 +304,11 @@ public class TelaFicha extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.deletarVacina(txtIdVacina);
-				banco.pesquisarVacina(txtAnimal, listVacina, listData);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.deletarVacina(txtIdVacina);
+					banco.pesquisarVacina(txtAnimal, listVacina, listData);
+					banco.desconectar();
+				}
 			}
 		});
 		btnDeletar.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -317,57 +316,45 @@ public class TelaFicha extends JFrame {
 		panel_1.add(btnDeletar);
 
 		JButton btnNovo = new JButton("Novo");
-		btnNovo.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnNovo.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnNovo.setMnemonic('N');
 
 		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				txtData.setText(formatoBr.format(c));
-				txtDia.setText("");
-				txtHistorico.setText("");
-				txtPeso.setText("");
-				txtPeso.setEditable(true);
-				txtHistorico.setEditable(true);
-				txtDia.setEditable(true);
-				comboVet.setEditable(true);
-				btnEditar.setVisible(false);
-				list.clearSelection();
-
+				Ficha.novo(txtData, txtDia, txtHistorico, txtPeso, comboVet, btnEditar, list);
 			}
 		});
 		btnNovo.setBounds(600, 478, 97, 25);
 		contentPane.add(btnNovo);
 
 		JButton btnSalvar = new JButton("Salvar");
+		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnSalvar.setMnemonic('S');
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
-
-
 				int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente Salvar?", "Slavar",JOptionPane.YES_OPTION);
 				try {
-					if (resposta == JOptionPane.YES_OPTION) {
-						BancoDeDados banco = new BancoDeDados();
-						banco.conectar();
-						String dia = txtData.getText().substring(0,2);
-						String mes = txtData.getText().substring(3,5);
-						String ano = txtData.getText().substring(6);
-						String datasql1 = ano+"-"+mes+"-"+dia;
-						banco.inserirFicha(txtAnimal, txtIdVacina, txtIdVet, datasql1, txtPeso, txtDia, txtHistorico);
-						banco.desconectar();
+					if(Ficha.verificacao(txtDia, txtHistorico, txtPeso, comboVet) == true) {
+						if (resposta == JOptionPane.YES_OPTION) {
+							BancoDeDados banco = new BancoDeDados();
+							banco.conectar();
+							if(banco.estaConectado() == true) {
+								banco.inserirFicha(txtAnimal, txtIdVacina, txtIdVet, Ficha.data(txtData.getText()), txtPeso, txtDia, txtHistorico);
+								banco.desconectar();
+							}
+						}
 					}else if (resposta == JOptionPane.NO_OPTION) {
 						JOptionPane.showMessageDialog(null, "Ficha não Salva");
-						System.out.println(list.getSelectedValue() + "  " + formatoBr.format(d));
+						System.out.println(list.getSelectedValue() + "  " + formatoBr.format(new Date()));
 					}
 				}catch (Exception e1) {
-
+					JOptionPane.showMessageDialog(null, "Erro: " + e1.toString());
 				}}});
 		btnSalvar.setBounds(818, 516, 97, 25);
 		contentPane.add(btnSalvar);
 
 		JButton btnExcluir = new JButton("Excluir");
-		btnExcluir.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnExcluir.setMnemonic('X');
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -375,12 +362,12 @@ public class TelaFicha extends JFrame {
 				if (resposta == JOptionPane.YES_OPTION) {
 					BancoDeDados banco = new BancoDeDados();
 					banco.conectar();
-					banco.excluirFicha(txtIdFicha);
-					banco.pesquisarVacina(txtAnimal, listVacina, listData);
-					banco.pesquisarFicha(txtNome, list, list_2);
-					banco.desconectar();
-				} else if (resposta == JOptionPane.NO_OPTION) {
-
+					if(banco.estaConectado() == true) {
+						banco.excluirFicha(txtIdFicha);
+						banco.pesquisarVacina(txtAnimal, listVacina, listData);
+						banco.pesquisarFicha(txtNome, list, list_2);
+						banco.desconectar();
+					}
 				}
 			}
 		});
@@ -388,7 +375,7 @@ public class TelaFicha extends JFrame {
 		contentPane.add(btnExcluir);
 
 		JButton btnVoltar = new JButton("Voltar");
-		btnVoltar.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnVoltar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnVoltar.setMnemonic('V');
 		btnVoltar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -398,14 +385,15 @@ public class TelaFicha extends JFrame {
 		btnVoltar.setBounds(600, 516, 97, 25);
 		contentPane.add(btnVoltar);
 
-
 		listName = new JList();
 		listName.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.buscarAnimal(listName, TelaAnimal.txtClie, TelaAnimal.txtDono, TelaAnimal.txtAnimal, TelaAnimal.txtNome, TelaAnimal.txtEspecie, TelaAnimal.txtRaca, TelaAnimal.txtNascimento, TelaAnimal.txtCor, TelaAnimal.txtObs, TelaAnimal.opMacho, TelaAnimal.opFem, TelaAnimal.opSim, TelaAnimal.opNao);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.buscarAnimal(listName, TelaAnimal.txtClie, TelaAnimal.txtDono, TelaAnimal.txtAnimal, TelaAnimal.txtNome, TelaAnimal.txtEspecie, TelaAnimal.txtRaca, TelaAnimal.txtNascimento, TelaAnimal.txtCor, TelaAnimal.txtObs, TelaAnimal.opMacho, TelaAnimal.opFem, TelaAnimal.opSim, TelaAnimal.opNao);
+					banco.desconectar();
+				}
 			}
 		});
 		listName.setBounds(12, 430, 195, 81);
@@ -437,8 +425,10 @@ public class TelaFicha extends JFrame {
 			public void caretUpdate(CaretEvent arg0) {
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.pesquisarFicha(txtNome, list, list_2);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.pesquisarFicha(txtNome, list, list_2);
+					banco.desconectar();
+				}
 			}
 		});
 		txtBusca.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -451,20 +441,9 @@ public class TelaFicha extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					btnEditar.setVisible(true);
-					txtPeso.setEditable(true);
-					txtHistorico.setEditable(true);
-					txtDia.setEditable(true);
-					comboVet.setEditable(true);
-
-
+					Ficha.cliqueTrue(btnEditar, txtPeso, txtHistorico, txtDia, comboVet);
 				} else {
-					txtPeso.setEditable(false);
-					txtHistorico.setEditable(false);
-					txtDia.setEditable(false);
-					comboVet.setEditable(false);
-					btnEditar.setVisible(false);
-
+					Ficha.cliqueFalse(btnEditar, txtPeso, txtHistorico, txtDia, comboVet);
 				}
 			}
 		});
@@ -472,8 +451,10 @@ public class TelaFicha extends JFrame {
 			public void valueChanged(ListSelectionEvent e) {
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.buscarFicha(list, txtNome, txtPeso, txtDia, txtHistorico, comboVet, txtIdFicha);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.buscarFicha(list, txtNome, txtPeso, txtDia, txtHistorico, comboVet, txtIdFicha , txtIdVet);
+					banco.desconectar();
+				}
 			}
 		});
 		list.setValueIsAdjusting(true);
@@ -498,8 +479,8 @@ public class TelaFicha extends JFrame {
 
 		txtIdVacina = new JTextField();
 		txtIdVacina.setEnabled(false);
-		txtIdVacina.setEditable(false);
 		txtIdVacina.setVisible(false);
+		txtIdVacina.setEnabled(false);
 		txtIdVacina.setBounds(283, 0, 116, 22);
 		contentPane.add(txtIdVacina);
 		txtIdVacina.setColumns(10);
@@ -514,15 +495,15 @@ public class TelaFicha extends JFrame {
 		txtClie = new JTextField();
 		txtClie.setBounds(558, 21, 116, 22);
 		contentPane.add(txtClie);
+		txtClie.setVisible(false);
 		txtClie.setEnabled(false);
 		txtClie.setEditable(false);
-		txtClie.setVisible(false);
 		txtClie.setColumns(10);
 
 		txtIdFicha = new JTextField();
+		txtIdFicha.setVisible(false);
 		txtIdFicha.setEnabled(false);
 		txtIdFicha.setEditable(false);
-		txtIdFicha.setVisible(false);
 		txtIdFicha.setBounds(283, 34, 116, 22);
 		contentPane.add(txtIdFicha);
 		txtIdFicha.setColumns(10);

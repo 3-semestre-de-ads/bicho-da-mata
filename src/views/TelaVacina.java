@@ -13,6 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -43,7 +44,7 @@ public class TelaVacina extends JFrame {
 					TelaVacina frame = new TelaVacina();
 					frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 				}
 			}
 		});
@@ -53,11 +54,14 @@ public class TelaVacina extends JFrame {
 	 * Create the frame.
 	 */
 	public TelaVacina() {
+		
 		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaVacina.class.getResource("/imagens/fundoBichoBanco.png")));
 		setTitle("Bicho da Mata - Vacinas");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 886, 586);
+		setLocationRelativeTo(null);
+		
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -144,6 +148,7 @@ public class TelaVacina extends JFrame {
 		contentPane.add(list);
 
 		JButton btnNewButton = new JButton("Voltar");
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -153,24 +158,28 @@ public class TelaVacina extends JFrame {
 		contentPane.add(btnNewButton);
 
 		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnExcluir.setBounds(653, 492, 97, 25);
 		contentPane.add(btnExcluir);
 
 		JButton btnNovo = new JButton("Novo");
+		btnNovo.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnNovo.setBounds(761, 492, 97, 25);
 		contentPane.add(btnNovo);
 
 		JButton btnRelatrio = new JButton("Relat\u00F3rio");
+		btnRelatrio.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnRelatrio.setBounds(544, 454, 97, 25);
 		contentPane.add(btnRelatrio);
 
 		JButton btnEditar = new JButton("Editar");
+		btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnEditar.setBounds(653, 454, 97, 25);
 		contentPane.add(btnEditar);
 
 		JButton btnSalvar = new JButton("Salvar");
+		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnSalvar.setBounds(761, 454, 97, 25);
 		contentPane.add(btnSalvar);
 	}
-
 }

@@ -35,7 +35,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 
-import service.BancoDeDados;
+import controller.Animal;
+import model.BancoDeDados;
 /**
  * Esta classe sera utilizada para receber todas as informacoes importante que se refere ao animal a ser tratado pela clinica;
  * um metodo criado pela classe BancoDeDados sera responsavel pelo CRUD a ser enviado junto ao banco de dados.
@@ -69,6 +70,7 @@ public class TelaAnimal extends JFrame {
 	public static JTextArea txtObs;
 	public static JButton btnEditar;
 	public static JButton btnSalvar;
+
 	/**
 	 * Launch the application.
 	 */
@@ -79,7 +81,7 @@ public class TelaAnimal extends JFrame {
 					TelaAnimal frame = new TelaAnimal();
 					frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 				}
 			}
 		});
@@ -89,18 +91,20 @@ public class TelaAnimal extends JFrame {
 	 * Create the frame.
 	 */
 	public TelaAnimal() {
+
 		setType(Type.POPUP);
 		setResizable(false);
 		setTitle("Bicho da Mata - Pet's");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaAnimal.class.getResource("/imagens/fundoBichoBanco.png")));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 949, 600);
+		setLocationRelativeTo(null);
+
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(255, 255, 255));
@@ -120,7 +124,7 @@ public class TelaAnimal extends JFrame {
 		panel.add(lblRaa);
 
 		txtNome = new JTextField();
-		txtNome.setFont(new Font("Tahoma", Font.BOLD, 13));
+		txtNome.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtNome.setBounds(295, 86, 172, 22);
 		panel.add(txtNome);
 		txtNome.setColumns(10);
@@ -131,7 +135,7 @@ public class TelaAnimal extends JFrame {
 		panel.add(lblRaa_1);
 
 		txtRaca = new JTextField();
-		txtRaca.setFont(new Font("Tahoma", Font.BOLD, 13));
+		txtRaca.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtRaca.setColumns(10);
 		txtRaca.setBounds(295, 157, 172, 22);
 		panel.add(txtRaca);
@@ -142,7 +146,7 @@ public class TelaAnimal extends JFrame {
 		panel.add(lblEspcie);
 
 		txtEspecie = new JTextField();
-		txtEspecie.setFont(new Font("Tahoma", Font.BOLD, 13));
+		txtEspecie.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtEspecie.setColumns(10);
 		txtEspecie.setBounds(12, 157, 172, 22);
 		panel.add(txtEspecie);
@@ -152,22 +156,17 @@ public class TelaAnimal extends JFrame {
 		label.setBounds(12, 202, 56, 16);
 		panel.add(label);
 
-
-
 		opMacho.setFont(new Font("Tahoma", Font.BOLD, 13));
 		opMacho.setBackground(Color.WHITE);
 		opMacho.setBounds(12, 227, 78, 25);
 		buttonGroup.add(opMacho);
 		panel.add(opMacho);
 
-
 		opFem.setFont(new Font("Tahoma", Font.BOLD, 13));
 		opFem.setBackground(Color.WHITE);
 		opFem.setBounds(109, 227, 127, 25);
 		buttonGroup.add(opFem);
 		panel.add(opFem);
-
-
 
 		opNao.setFont(new Font("Tahoma", Font.BOLD, 13));
 		opNao.setBackground(Color.WHITE);
@@ -179,7 +178,6 @@ public class TelaAnimal extends JFrame {
 		lblCastrado.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblCastrado.setBounds(296, 202, 87, 16);
 		panel.add(lblCastrado);
-
 
 		opSim.setFont(new Font("Tahoma", Font.BOLD, 13));
 		opSim.setBackground(Color.WHITE);
@@ -197,9 +195,9 @@ public class TelaAnimal extends JFrame {
 			txtNascimento.setFormatterFactory(new DefaultFormatterFactory(
 					new MaskFormatter("##/##/####")));
 		} catch (ParseException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 		}
-		txtNascimento.setFont(new Font("Tahoma", Font.BOLD, 13));
+		txtNascimento.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtNascimento.setColumns(10);
 		txtNascimento.setBounds(12, 301, 172, 22);
 		panel.add(txtNascimento);
@@ -210,15 +208,13 @@ public class TelaAnimal extends JFrame {
 		panel.add(lblDataDeNascimcorento);
 
 		txtCor = new JTextField();
-		txtCor.setFont(new Font("Tahoma", Font.BOLD, 13));
+		txtCor.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtCor.setColumns(10);
 		txtCor.setBounds(296, 301, 171, 22);
 		panel.add(txtCor);
 
-
 		txtDono = new JTextField();
 		txtDono.setEditable(false);
-		txtDono.setEnabled(false);
 		txtDono.setFont(new Font("Tahoma", Font.BOLD, 13));
 		txtDono.setBounds(12, 86, 172, 22);
 		panel.add(txtDono);
@@ -249,98 +245,45 @@ public class TelaAnimal extends JFrame {
 
 		txtObs = new JTextArea();
 		txtObs.setFont(new Font("Monospaced", Font.BOLD, 17));
-		txtObs.setBackground(new Color(0, 204, 102));
+		txtObs.setBackground(new Color(153, 255, 153));
 		txtObs.setBounds(12, 358, 488, 75);
 		panel.add(txtObs);
-
 
 		JLabel lblAnimal = new JLabel("Animal");
 		lblAnimal.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblAnimal.setBounds(12, 13, 134, 32);
 		contentPane.add(lblAnimal);
-		Date d = new Date();
 
 		JButton btnNovo = new JButton("Novo");
+		btnNovo.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnNovo.setMnemonic('N');
 		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				txtNome.setText("");
-				txtEspecie.setText("");
-				opSim.setSelected(false);
-				opMacho.setSelected(false);
-				txtNascimento.setText("");
-				txtCor.setText("");
-				txtRaca.setText("");
-				txtObs.setText("");
-				txtNome.setEditable(true);
-				txtEspecie.setEditable(true);
-				txtRaca.setEditable(true);
-				txtObs.setEditable(true);
-				opMacho.setEnabled(true);
-				opFem.setEnabled(true);
-				opSim.setEnabled(true);
-				opNao.setEnabled(true);
-				txtNascimento.setEditable(true);
-				txtCor.setEditable(true);
-				btnEditar.setVisible(false);
-				btnSalvar.setVisible(true);
-				txtDataFicha.setText(formatoBr.format(d));
-				listName.clearSelection();
-
+				Animal.novo(txtNome, txtEspecie, opSim, opNao, opMacho, opFem, txtNascimento, txtCor, txtRaca, txtObs, btnEditar, btnSalvar, txtDataFicha, listName);
 			}
 		});
 		btnNovo.setBounds(557, 457, 97, 25);
 		contentPane.add(btnNovo);
 
 		btnSalvar = new JButton("Salvar");
+		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnSalvar.setMnemonic('S');
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente Salvar?", "Salvar",JOptionPane.YES_OPTION);
 				try {
-
 					if (resposta == JOptionPane.YES_OPTION) {
-						BancoDeDados banco = new BancoDeDados();
-						banco.conectar();
-						String dia = TelaAnimal.txtNascimento.getText().substring(0,2);
-						String mes = TelaAnimal.txtNascimento.getText().substring(3,5);
-						String ano = TelaAnimal.txtNascimento.getText().substring(6);
-						String datasql = ano+"-"+mes+"-"+dia;
-
-						String dia1 = TelaAnimal.txtDataFicha.getText().substring(0,2);
-						String mes2 = TelaAnimal.txtDataFicha.getText().substring(3,5);
-						String ano2 = TelaAnimal.txtDataFicha.getText().substring(6);
-						String dataFicha = ano2+"-"+mes2+"-"+dia1 ;
-
-						String d = null;
-						if (opMacho.isSelected()) {
-							d = "Macho";
-						} else if (opFem.isSelected()) {
-							d = "Femea";
-						}
-
-						String op = null;
-						if (opSim.isSelected()) {
-							op = "Sim";
-						}else if (opNao.isSelected()) {
-							op = "Nao";
-						}
-
-
-						banco.inserirAnimal(txtClie, txtNome, txtEspecie, txtRaca, d, datasql.intern(), op, txtCor, dataFicha.intern(), txtObs);
-						JOptionPane.showMessageDialog(null,"Cadastro realizado com sucesso!");
-
-						txtNome.setText("");
-						txtEspecie.setText("");
-						opSim.setSelected(false);
-						opMacho.setSelected(false);
-						txtNascimento.setText("");
-						txtCor.setText("");
-						txtRaca.setText("");
-						txtObs.setText("");
-						banco.pesquisarAnimal(txtDono, list, listName, list2);;
-						banco.desconectar();
-
+						if(Animal.verificacao(txtNome, txtEspecie, opSim, opNao, opMacho, opFem, txtNascimento, txtCor, txtRaca, txtObs) == true) {
+							BancoDeDados banco = new BancoDeDados();
+							banco.conectar();
+							if(banco.estaConectado() == true) {
+								banco.inserirAnimal(txtClie, txtNome, txtEspecie, txtRaca, Animal.sexo(opMacho), Animal.data(txtNascimento).intern(), Animal.castrado(opSim), txtCor, Animal.data(txtDataFicha).intern(), txtObs);
+								JOptionPane.showMessageDialog(null,"Cadastro realizado com sucesso!");
+								Animal.novo(txtNome, txtEspecie, opSim, opNao, opMacho, opFem, txtNascimento, txtCor, txtRaca, txtObs, btnEditar, btnSalvar, txtDataFicha, listName);
+								banco.pesquisarAnimal(txtDono, list, listName, list2);;
+								banco.desconectar();
+							}
+						}	
 					} else if (resposta == JOptionPane.NO_OPTION) {
 						JOptionPane.showMessageDialog(null, "Cadastro não Salvo");
 					}
@@ -351,6 +294,7 @@ public class TelaAnimal extends JFrame {
 		contentPane.add(btnSalvar);
 
 		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnExcluir.setMnemonic('X');
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -358,30 +302,12 @@ public class TelaAnimal extends JFrame {
 				if (resposta == JOptionPane.YES_OPTION) {
 					BancoDeDados banco = new BancoDeDados();
 					banco.conectar();
-					banco.excluirAnimal(txtAnimal);
-					banco.pesquisarAnimal(txtDono, list, listName, list2);
-
-					txtNome.setText("");
-					txtEspecie.setText("");
-					opSim.setSelected(false);
-					opMacho.setSelected(false);
-					txtNascimento.setText("");
-					txtCor.setText("");
-					txtRaca.setText("");
-					txtObs.setText("");
-					txtNome.setEditable(true);
-					txtEspecie.setEditable(true);
-					txtRaca.setEditable(true);
-					txtObs.setEditable(true);
-					opMacho.setEnabled(true);
-					opFem.setEnabled(true);
-					opSim.setEnabled(true);
-					opNao.setEnabled(true);
-					txtNascimento.setEditable(true);
-					txtCor.setEditable(true);
-					btnEditar.setVisible(true);
-					txtDataFicha.setText(formatoBr.format(d));
-					banco.desconectar();
+					if(banco.estaConectado() == true) {
+						banco.excluirAnimal(txtAnimal);
+						banco.pesquisarAnimal(txtDono, list, listName, list2);
+						Animal.novo(txtNome, txtEspecie, opSim, opNao, opMacho, opFem, txtNascimento, txtCor, txtRaca, txtObs, btnEditar, btnSalvar, txtDataFicha, listName);
+						banco.desconectar();
+					}
 				}else if (resposta == JOptionPane.NO_OPTION) {
 
 				}
@@ -390,6 +316,7 @@ public class TelaAnimal extends JFrame {
 		contentPane.add(btnExcluir);
 
 		JButton btnVoltar = new JButton("Voltar");
+		btnVoltar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnVoltar.setMnemonic('V');
 		btnVoltar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -400,17 +327,17 @@ public class TelaAnimal extends JFrame {
 		contentPane.add(btnVoltar);
 
 		txtClie = new JTextField();
-		txtClie.setVisible(false);
 		txtClie.setBounds(557, 21, 116, 22);
 		contentPane.add(txtClie);
+		txtClie.setVisible(false);
 		txtClie.setEnabled(false);
 		txtClie.setEditable(false);
 		txtClie.setColumns(10);
 
 		txtAnimal = new JTextField();
-		txtAnimal.setVisible(false);
 		txtAnimal.setEnabled(false);
 		txtAnimal.setEditable(false);
+		txtAnimal.setVisible(false);
 		txtAnimal.setBounds(393, 21, 116, 22);
 		contentPane.add(txtAnimal);
 		txtAnimal.setColumns(10);
@@ -435,8 +362,10 @@ public class TelaAnimal extends JFrame {
 			public void caretUpdate(CaretEvent arg0) {
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.pesquisarAnimal(txtDono, list, listName, list2);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.pesquisarAnimal(txtDono, list, listName, list2);
+					banco.desconectar();
+				}
 			}
 		});
 		txtBuscaDono.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -448,7 +377,6 @@ public class TelaAnimal extends JFrame {
 		panel_1.add(list);
 		list.setValueIsAdjusting(true);
 
-
 		listName = new JList<String>();
 		listName.addContainerListener(new ContainerAdapter() {
 			@Override
@@ -458,35 +386,10 @@ public class TelaAnimal extends JFrame {
 		listName.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
 				if (e.getClickCount() == 2) {
-					txtNome.setEditable(true);
-					txtEspecie.setEditable(true);
-					txtRaca.setEditable(true);
-					txtObs.setEditable(true);
-					opMacho.setEnabled(true);
-					opFem.setEnabled(true);
-					opSim.setEnabled(true);
-					opNao.setEnabled(true);
-					txtNascimento.setEditable(true);
-					txtCor.setEditable(true);
-					btnEditar.setVisible(true);
-					txtDataFicha.setText(formatoBr.format(d));
-					btnSalvar.setVisible(false);
+					Animal.cliqueTrue(txtNome, txtEspecie, opSim, opNao, opMacho, opFem, txtNascimento, txtCor, txtRaca, txtObs, btnEditar, btnSalvar, txtDataFicha);
 				}else {
-					txtNome.setEditable(false);
-					txtEspecie.setEditable(false);
-					txtRaca.setEditable(false);
-					txtObs.setEditable(false);
-					opMacho.setEnabled(false);
-					opFem.setEnabled(false);
-					opSim.setEnabled(false);
-					opNao.setEnabled(false);
-					txtNascimento.setEditable(false);
-					txtCor.setEditable(false);
-					btnEditar.setVisible(false);
-					btnEditar.setVisible(false);
-					btnSalvar.setVisible(true);
+					Animal.cliqueFalse(txtNome, txtEspecie, opSim, opNao, opMacho, opFem, txtNascimento, txtCor, txtRaca, txtObs, btnEditar, btnSalvar, txtDataFicha);
 				}
 			}
 		});
@@ -515,26 +418,29 @@ public class TelaAnimal extends JFrame {
 		panel_1.add(list2);
 
 		JButton btnFicha_1 = new JButton("Ficha");
+		btnFicha_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnFicha_1.setMnemonic('F');
 		btnFicha_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				TelaFicha telaFicha = new TelaFicha();
 				BancoDeDados banco = new BancoDeDados();	
 				banco.conectar();
-				banco.setFicha(listName, TelaFicha.txtDono, TelaFicha.txtNome, TelaFicha.txtAnimal);
-				banco.setIDVet(TelaFicha.comboVet, TelaFicha.txtIdVet);
-				banco.pesquisarFicha(TelaFicha.txtNome, TelaFicha.list, TelaFicha.list_2);
-				banco.pesquisarVacina(TelaFicha.txtAnimal, TelaFicha.listVacina, TelaFicha.listData);
-				telaFicha.setVisible(true);
-				banco.setVet(TelaFicha.comboVet);
-				banco.desconectar();
-				dispose();
+				if(banco.estaConectado() == true) {
+					banco.setFicha(listName, TelaFicha.txtDono, TelaFicha.txtNome, TelaFicha.txtAnimal);
+					banco.setIDVet(TelaFicha.comboVet, TelaFicha.txtIdVet);
+					banco.pesquisarFicha(TelaFicha.txtNome, TelaFicha.list, TelaFicha.list_2);
+					banco.pesquisarVacina(TelaFicha.txtAnimal, TelaFicha.listVacina, TelaFicha.listData);
+					telaFicha.setVisible(true);
+					banco.setVet(TelaFicha.comboVet);
+					banco.desconectar();
+				}
 			}
 		});
 		btnFicha_1.setBounds(682, 457, 97, 25);
 		contentPane.add(btnFicha_1);
 
 		btnEditar = new JButton("Editar");
+		btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnEditar.setBounds(791, 495, 97, 25);
 		contentPane.add(btnEditar);
 		btnEditar.setVisible(false);
@@ -545,9 +451,11 @@ public class TelaAnimal extends JFrame {
 				if (resposta == JOptionPane.YES_OPTION) {
 					BancoDeDados banco = new BancoDeDados();
 					banco.conectar();
-					banco.editarAnimal(opMacho, opFem, opSim, opNao, txtAnimal, txtNome, txtEspecie, txtRaca, txtNascimento, txtCor, txtDataFicha, txtObs);
-					banco.pesquisarAnimal(txtDono, list, listName, list2);
-					banco.desconectar();
+					if(banco.estaConectado() == true) {
+						banco.editarAnimal(opMacho, opFem, opSim, opNao, txtAnimal, txtNome, txtEspecie, txtRaca, txtNascimento, txtCor, txtDataFicha, txtObs);
+						banco.pesquisarAnimal(txtDono, list, listName, list2);
+						banco.desconectar();
+					}
 				}
 				else {
 					JOptionPane.showMessageDialog(null, txtNome.getText()+ " Não Editado");
@@ -555,16 +463,17 @@ public class TelaAnimal extends JFrame {
 			}});
 		listName.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
-
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
-				banco.buscarAnimal(listName, txtClie, txtDono, txtAnimal, txtNome, txtEspecie, txtRaca, txtNascimento, txtCor, txtObs, opMacho, opFem, opSim, opNao);
-				banco.desconectar();
+				if(banco.estaConectado() == true) {
+					banco.buscarAnimal(listName, txtClie, txtDono, txtAnimal, txtNome, txtEspecie, txtRaca, txtNascimento, txtCor, txtObs, opMacho, opFem, opSim, opNao);
+					banco.desconectar();
+				}
 			}
 		});
 		list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
-				
+
 			}
 		});
 	}
