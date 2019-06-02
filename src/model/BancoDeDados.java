@@ -1081,7 +1081,6 @@ public class BancoDeDados {
 	}
 	public void gerarRelatorio(JDateChooser dataInicial, JDateChooser dataFinal, JComboBox<String> realizado, JComboBox<String> tipo, JComboBox<String> veterinario) {
 		try {
-			Class.forName("net.js.jasperreports.engine.JasperFillManager");
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			Map<String, Object> param = new HashMap();
 			String dataInicio =  formatoBr.format(dataInicial.getDate());
