@@ -1,8 +1,9 @@
+/.idea/
+/.metadata/
+/.settings/
 /WebService/
-/Calender/
-/Interface/
-/connection/
-/interfaces/
-/service/
-/utilitarios/
+/controller/
+/imagens/
+/model/
+/report/
 /views/
