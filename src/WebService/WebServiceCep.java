@@ -10,16 +10,50 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 /**
- * Ferramenta utilizada para buscar CEP gratuita,
- * utilizamos esta API para buscar o endereco através dos CEP nas classes TelaCadastro e TelaFuncionario.
- * @author mauri
- *
+ * Ferramenta de busca de CEP, veja o mï¿½todo {@link WebServiceCep#searchCep(String)} para
+ * maiores informaï¿½ï¿½es.
+ * <BR>
+ * <BR>Constroi um objeto {@link WebServiceCep} com os dados XML encapsulados, a partir
+ * da chamada do mï¿½todo estatico {@link WebServiceCep#searchCep(String)}.
+ * <BR>
+ * <BR>Objeto contem todas as informaï¿½ï¿½es do XML, alï¿½m de informaï¿½ï¿½es referente ao
+ * resultado da pesquisa.
+ * <BR>
+ * <BR>Esta ferramente depende diretamente do pacote <tt>org.dom4j</tt> para fazer o 
+ * parse dos arquivos XML. O pacote dom4j.jar pode ser encontrado em 
+ * <a href="http://www.dom4j.org/dom4j-1.6.1/download.html" target="_blank">dom4j.org</a>
+ * <BR>
+ * <BR>Exemplo de uso:
+ * <BR><tt>{@link WebServiceCep} cep = {@link WebServiceCep}.searchCep("13345-325");
+ * 
+ * <BR>//caso a busca ocorra bem, imprime os resultados.
+ * <BR>if (cep.wasSuccessful()) {
+ * <BR>&nbsp; &nbsp; System.out.println("Cep: "+cep.getCep());
+ * <BR>&nbsp; &nbsp; System.out.println("Logradouro: "+cep.getLogradouroFull());
+ * <BR>&nbsp; &nbsp; System.out.println("Bairro: "+cep.getBairro());
+ * <BR>&nbsp; &nbsp; System.out.println("Cidade: "+
+ * 			cep.getCidade()+"/"+ cep.cep());
+ * <BR>//caso haja problemas imprime o cï¿½digo e msg de erro.
+ * <BR>} else {
+ * <BR>&nbsp; &nbsp; System.out.println("Erro nï¿½mero: " + cep.getResulCode());
+ * <BR>&nbsp; &nbsp; System.out.println("Descriï¿½ï¿½o do erro: " + cep.getResultText());
+ * <BR>}
+ * <BR></tt>
+ * <BR>A resposta do console seria:
+ * <BR><tt>
+ * <BR>Cep: 13345325
+ * <BR>Logradouro: Rua Cinco
+ * <BR>Bairro: Jardim Rï¿½mulo Zoppi
+ * <BR>Cidade: Indaiatuba/SP
+ * <BR></tt>
+ * <BR>Ultima revisï¿½o: 09/01/2009
+ * @author Renato Sebben
  */
 public final class WebServiceCep {
 	
 /* Classes Internas, que auxiliam na busca do CEP */
 	/**
-	 * Enumeration para setar os parametros do XML, cada constante conhece o seu metodo
+	 * Enumeration para setar os parametros do XML, cada constante conhece o seu mï¿½todo
 	 * correspondente, invocando a partir de um atalho comum
 	 * {@link Xml#setCep(String, WebServiceCep)}.
 	 * @author Tomaz Lavieri
@@ -193,6 +227,7 @@ public final class WebServiceCep {
 	 * 			removidos, e a string serï¿½ truncada caso seja maior que 8 caracters.
 	 * @return {@link WebServiceCep} contendo as informaï¿½ï¿½es da pesquisa.
 	 */
+	@SuppressWarnings("deprecation")
 	public static WebServiceCep searchCep(String cep) {
 		cep = cep.replaceAll( "\\D*", "" ); //To numeric digits only
 		if (cep.length() > 8)
