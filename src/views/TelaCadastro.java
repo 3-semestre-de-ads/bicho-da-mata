@@ -38,7 +38,7 @@ import javax.swing.text.MaskFormatter;
 
 import WebService.WebServiceCep;
 
-import service.BancoDeDados;
+import model.BancoDeDados;
 /**
  * Nesta classe sera feita todo o layout para receber os dados importantes para o cadastro do cliente junto a clinica.
  * alguns metodos criados na classe BancoDeDados que sera invocados para realizar o CRUD dessas informacoes.

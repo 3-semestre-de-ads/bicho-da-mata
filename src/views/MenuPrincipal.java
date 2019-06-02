@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
-import service.BancoDeDados;
+import model.BancoDeDados;
 
 /**
  * Classe criada com o propósito de ser o Menu Principal do projeto, os botoes criado nesta classe direcionara para as funcionalidades do sistema.
