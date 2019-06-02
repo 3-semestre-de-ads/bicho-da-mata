@@ -155,13 +155,14 @@ public class TelaCliente extends JFrame {
 		btnVoltar.setMnemonic('C');
 		btnVoltar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TelaAnimal animal = new TelaAnimal();
 				BancoDeDados banco = new BancoDeDados();
 				banco.conectar();
 				if(banco.estaConectado() == true) {
-					banco.setClienteAnimal(listName, TelaAnimal.txtDono, TelaAnimal.txtClie);
-					animal.setVisible(true);
-					banco.desconectar();
+					TelaAnimal animal = new TelaAnimal();
+					if(banco.setClienteAnimal(listName, TelaAnimal.txtDono, TelaAnimal.txtClie) == true) {
+						animal.setVisible(true);
+						banco.desconectar();
+					}
 				}
 			}
 		});

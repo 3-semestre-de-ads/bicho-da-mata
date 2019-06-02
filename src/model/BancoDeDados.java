@@ -52,7 +52,7 @@ public class BancoDeDados {
 			this.connection = DriverManager.getConnection(servidor, usuario, senha);
 			this.statement = this.connection.createStatement();
 		}catch (Exception e) {
-			
+
 		}
 	}
 
@@ -445,7 +445,7 @@ public class BancoDeDados {
 			JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 		}
 	}
-	
+
 	public boolean verificarCnpj(JTextField cnpj) {
 		try {
 			resultset = this.statement.executeQuery("SELECT nome FROM fornecedor WHERE cnpj = '" + cnpj.getText() + "';");
@@ -911,7 +911,7 @@ public class BancoDeDados {
 			JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
 		}
 	}
-	
+
 	public boolean verificarCpf(JTextField cpf) {
 		try {
 			resultset = this.statement.executeQuery("SELECT nome FROM cliente WHERE cpf = '" + cpf.getText() + "';");
@@ -941,17 +941,24 @@ public class BancoDeDados {
 		}
 	}
 
-	public void setClienteAnimal(JList<String> listaNome, JTextField dono, JTextField cliente) {
+	public boolean setClienteAnimal(JList<String> listaNome, JTextField dono, JTextField cliente) {
 		try {
-			String query = "SELECT * FROM cliente WHERE nome = " + "'" + listaNome.getSelectedValue() + "';";
-
-			resultset = this.statement.executeQuery(query);
-			while(this.resultset.next()) {
-				dono.setText(this.resultset.getString("nome"));
-				cliente.setText(this.resultset.getString("ID"));
+			if(listaNome.getSelectedValue() == null) {
+				JOptionPane.showMessageDialog(null, "Selecione um cliente ou cadastre um novo!", "Atenção!", 0);
+				return false;
+			}
+			else {
+				String query = "SELECT * FROM cliente WHERE nome = " + "'" + listaNome.getSelectedValue() + "';";
+				resultset = this.statement.executeQuery(query);
+				while(this.resultset.next()) {
+					dono.setText(this.resultset.getString("nome"));
+					cliente.setText(this.resultset.getString("ID"));
+				}
+				return true;
 			}
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Erro: " + e.toString());
+			return false;
 		}
 	}
 
@@ -1118,7 +1125,7 @@ public class BancoDeDados {
 			param.put("TIPO", c);
 			param.put("REAL", r);
 
-			JasperPrint jp = JasperFillManager.fillReport("src/report/bmrelat.jasper", param, connection );
+			JasperPrint jp = JasperFillManager.fillReport("src/report/bmrelat.jasper", param, connection);
 
 			JasperViewer jw = new JasperViewer(jp);
 			jw.setVisible(true);
