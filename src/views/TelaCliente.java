@@ -98,9 +98,10 @@ public class TelaCliente extends JFrame {
 		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaCliente.class.getResource("/imagens/fundoBichoBanco.png")));
 		setTitle("Bicho da Mata - Cliente");
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 949, 600);
 		setLocationRelativeTo(null);
+		toFront();
 
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));

@@ -96,9 +96,10 @@ public class TelaAnimal extends JFrame {
 		setResizable(false);
 		setTitle("Bicho da Mata - Pet's");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaAnimal.class.getResource("/imagens/fundoBichoBanco.png")));
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 949, 600);
 		setLocationRelativeTo(null);
+		toFront();
 
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));

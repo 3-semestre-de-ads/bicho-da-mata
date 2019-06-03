@@ -55,9 +55,10 @@ public class TelaRelatorio extends JFrame {
 	public TelaRelatorio() {
 
 		setResizable(false);
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 799, 317);
 		setLocationRelativeTo(null);
+		toFront();
 
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);

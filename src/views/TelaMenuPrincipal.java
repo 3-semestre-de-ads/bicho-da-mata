@@ -104,9 +104,10 @@ public class TelaMenuPrincipal extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaMenuPrincipal.class.getResource("/imagens/fundoBichoBanco.png")));
 		setType(Type.POPUP);
 		setTitle("Bicho Da Mata");
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(500, 200, 785, 572);
 		setLocationRelativeTo(null);
+		toFront();
 
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));
@@ -208,7 +209,7 @@ public class TelaMenuPrincipal extends JFrame {
 		btnSair.setMnemonic('S');
 		btnSair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				System.exit(0);
 			}
 		});
 		btnSair.setBounds(672, 497, 97, 38);

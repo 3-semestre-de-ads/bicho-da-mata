@@ -92,13 +92,15 @@ public class TelaFicha extends JFrame {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes", "serial" })
 	public TelaFicha() {
+		
 		setType(Type.POPUP);
 		setResizable(false);
 		setTitle("Bicho da Mata - Pet's");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaFicha.class.getResource("/imagens/fundoBichoBanco.png")));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 949, 600);
 		setLocationRelativeTo(null);
+		toFront();
 
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));

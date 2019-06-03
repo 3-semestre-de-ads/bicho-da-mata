@@ -61,9 +61,10 @@ public class TelaCalculadora extends JFrame {
 		setResizable(false);
 		setTitle("Bicho da Mata - Calculadora");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaCalculadora.class.getResource("/imagens/fundoBichoBanco.png")));
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 602, 351);
 		setLocationRelativeTo(null);
+		toFront();
 		
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));

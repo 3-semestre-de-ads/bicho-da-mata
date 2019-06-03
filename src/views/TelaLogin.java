@@ -96,15 +96,17 @@ public class TelaLogin extends JFrame {
 	 * Create the frame.
 	 */
 	public TelaLogin() {
+		
 		setResizable(false);
 		setBackground(Color.WHITE);
 		setTitle("Login");
 		setAlwaysOnTop(false);
 		setForeground(Color.RED);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaLogin.class.getResource("/imagens/LogoAnimais.png")));
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(800, 300, 323, 274);
 		setLocationRelativeTo(null);
+		toFront();
 		
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));
@@ -151,7 +153,7 @@ public class TelaLogin extends JFrame {
 		btnSair.setMnemonic('S');
 		btnSair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				System.exit(0);
 			}
 		});
 		btnSair.setBounds(200, 158, 97, 33);
