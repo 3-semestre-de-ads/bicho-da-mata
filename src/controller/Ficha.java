@@ -49,6 +49,12 @@ public class Ficha {
 		veterinario.setEditable(false);
 	}
 	
+	public static void abrirReceita(JTextField nome, JTextField dono, JComboBox<String> veterinario, JTextField pet, JTextField tutor, JTextField vet) {
+		pet.setText(nome.getText());
+		tutor.setText(dono.getText());
+		vet.setText(veterinario.getSelectedItem().toString());
+	}
+	
 	public static boolean verificacao(TextArea dia, TextArea historico, JTextField peso, JComboBox<String> veterinario) {
 		if(peso.getText().equals(null)) {
 			JOptionPane.showMessageDialog(null, "Preencha o campo peso!");

@@ -1140,4 +1140,22 @@ public class BancoDeDados {
 			JOptionPane.showMessageDialog(tipo, "Dados Não Encontrados");
 		}
 	}
+	
+	public void gerarReceita(JDateChooser retorno, JTextField veterinario, JTextField pet, TextArea receita) {
+		try {
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+			Map<String, Object> param = new HashMap();
+
+			param.put("VET",veterinario.getText().toString());
+			param.put("PET", pet.getText().toString());
+			param.put("RECEITA", receita.getText().toString());
+			param.put("DATA", formatoBr.format(retorno.getDate()).toString());
+
+			JasperPrint jp = JasperFillManager.fillReport("src/report/Invoice.jasper", param, connection );
+			JasperViewer jw = new JasperViewer(jp);
+			jw.setVisible(true);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Dados Não Encontrados");
+		}
+	}
 }

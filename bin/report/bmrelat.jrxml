@@ -66,7 +66,7 @@ and ag.comparecimento like $P{REAL}]]>
 		<band height="136" splitType="Stretch">
 			<image>
 				<reportElement x="0" y="0" width="164" height="126" uuid="1c003177-754c-448f-8ce1-16868856f545"/>
-				<imageExpression><![CDATA["C:/Users/mauri/Desktop/PIC3/LOGO FINAL.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["/src/imagens/LOGO FINAL.jpg"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement style="Title" x="200" y="0" width="380" height="62" forecolor="#446F6A" uuid="bc1ce1da-8232-46ea-be55-cec4abb986dd"/>
@@ -91,7 +91,7 @@ and ag.comparecimento like $P{REAL}]]>
 			</staticText>
 			<image>
 				<reportElement x="590" y="0" width="219" height="126" uuid="4aa6f4d1-27dc-4b34-9227-59e19ce2c959"/>
-				<imageExpression><![CDATA["C:/Users/mauri/Desktop/PIC3/fundoBichoBanco.png"]]></imageExpression>
+				<imageExpression><![CDATA["/src/imagens/fundoBichoBanco.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

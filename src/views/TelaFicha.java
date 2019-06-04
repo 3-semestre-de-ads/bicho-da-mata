@@ -69,6 +69,7 @@ public class TelaFicha extends JFrame {
 	public static TextArea txtHistorico;
 	public static TextArea txtDia;
 	public static JButton btnEditar;
+	public static JButton btnReceita;
 
 	/**
 	 * Launch the application.
@@ -92,7 +93,7 @@ public class TelaFicha extends JFrame {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes", "serial" })
 	public TelaFicha() {
-		
+
 		setType(Type.POPUP);
 		setResizable(false);
 		setTitle("Bicho da Mata - Pet's");
@@ -109,7 +110,7 @@ public class TelaFicha extends JFrame {
 		contentPane.setLayout(null);
 
 		btnEditar = new JButton("Editar");
-		btnEditar.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {			
 				if(Ficha.verificacao(txtDia, txtHistorico, txtPeso, comboVet) == true) {
@@ -386,6 +387,19 @@ public class TelaFicha extends JFrame {
 		});
 		btnVoltar.setBounds(600, 516, 97, 25);
 		contentPane.add(btnVoltar);
+
+		JButton btnReceita = new JButton("Receita");
+		btnReceita.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnReceita.setBounds(709, 479, 97, 25);
+		contentPane.add(btnReceita);
+		btnReceita.setMnemonic('R');
+		btnReceita.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TelaReceita receita = new TelaReceita();
+				receita.setVisible(true);
+				Ficha.abrirReceita(txtNome, txtDono, comboVet, TelaReceita.txtPet, TelaReceita.txtTutor, TelaReceita.txtVet);
+			}
+		});
 
 		listName = new JList();
 		listName.addListSelectionListener(new ListSelectionListener() {
