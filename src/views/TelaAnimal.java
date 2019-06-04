@@ -427,13 +427,14 @@ public class TelaAnimal extends JFrame {
 				BancoDeDados banco = new BancoDeDados();	
 				banco.conectar();
 				if(banco.estaConectado() == true) {
-					banco.setFicha(listName, TelaFicha.txtDono, TelaFicha.txtNome, TelaFicha.txtAnimal);
-					banco.setIDVet(TelaFicha.comboVet, TelaFicha.txtIdVet);
-					banco.pesquisarFicha(TelaFicha.txtNome, TelaFicha.list, TelaFicha.list_2);
-					banco.pesquisarVacina(TelaFicha.txtAnimal, TelaFicha.listVacina, TelaFicha.listData);
-					telaFicha.setVisible(true);
-					banco.setVet(TelaFicha.comboVet);
-					banco.desconectar();
+					if(banco.setFicha(listName, txtNome, TelaFicha.txtDono, TelaFicha.txtNome, TelaFicha.txtAnimal) == true) {
+						banco.setIDVet(TelaFicha.comboVet, TelaFicha.txtIdVet);
+						banco.pesquisarFicha(TelaFicha.txtNome, TelaFicha.list, TelaFicha.list_2);
+						banco.pesquisarVacina(TelaFicha.txtAnimal, TelaFicha.listVacina, TelaFicha.listData);
+						telaFicha.setVisible(true);
+						banco.setVet(TelaFicha.comboVet);
+						banco.desconectar();
+					}
 				}
 			}
 		});

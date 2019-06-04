@@ -227,13 +227,12 @@ public class BancoDeDados {
 	@SuppressWarnings("unchecked")
 	public void setVet(JComboBox<String> veterinario) {
 		try {
-			String query = "SELECT nome from funcionario where funcao = 'Veterinário';";
+			String query = "SELECT nome from funcionario where funcao = 'Veterinário(a)';";
 			resultset = this.statement.executeQuery(query);
 			@SuppressWarnings("rawtypes")
 			DefaultComboBoxModel model = new DefaultComboBoxModel<String>();
 			while(this.resultset.next()) {
 				model.addElement(this.resultset.getString("nome"));
-
 			}
 			veterinario.setModel(model);
 
@@ -872,18 +871,26 @@ public class BancoDeDados {
 		}
 	}
 
-	public void setFicha(JList<String> listaNome, JTextField dono, JTextField nome, JTextField animal) {
+	public boolean setFicha(JList<String> listaNome, JTextField nomeAnimal, JTextField dono, JTextField nome, JTextField animal) {
 		try {
-			String query = "SELECT cliente.* , animal.* FROM animal join cliente on cliente.id = animal.idclie where animal.nome = " + "'" + listaNome.getSelectedValue() +"';";
+			if(nomeAnimal.getText().equals("")) {
+				JOptionPane.showMessageDialog(null, "Selecione um animal ou cadastre um novo!", "Atenção!", 0);
+				return false;
+			}
+			else {
+				String query = "SELECT cliente.* , animal.* FROM animal join cliente on cliente.id = animal.idclie where animal.nome = " + "'" + listaNome.getSelectedValue() +"';";
 
-			resultset = this.statement.executeQuery(query);
-			while(this.resultset.next()) {
-				dono.setText(this.resultset.getString("cliente.nome"));
-				nome.setText(this.resultset.getString("animal.nome"));
-				animal.setText(this.resultset.getString("animal.idanimal"));
+				resultset = this.statement.executeQuery(query);
+				while(this.resultset.next()) {
+					dono.setText(this.resultset.getString("cliente.nome"));
+					nome.setText(this.resultset.getString("animal.nome"));
+					animal.setText(this.resultset.getString("animal.idanimal"));
+				}
+				return true;
 			}
 		} catch (Exception e) {
 			JOptionPane.showConfirmDialog(null, "nao foi possivel localizar");
+			return false;
 		}
 	}
 
@@ -1102,16 +1109,16 @@ public class BancoDeDados {
 			}
 
 			String c = null;
-			if (tipo.getSelectedItem() .equals("Consulta")) {
+			if (tipo.getSelectedItem().equals("Consulta")) {
 				c = "Consulta";
 			}
-			else if (tipo.getSelectedItem() .equals("Cirurgia")) {
+			else if (tipo.getSelectedItem().equals("Cirurgia")) {
 				c = "Cirurgia";
 			}
-			else if (tipo.getSelectedItem() .equals("Vacina")) {
+			else if (tipo.getSelectedItem().equals("Vacina")) {
 				c = "Vacina";
 			}
-			if (tipo.getSelectedItem() .equals("Todos")) {
+			if (tipo.getSelectedItem().equals("Todos")) {
 				c = "%";
 			}
 			String t = veterinario.getSelectedItem().toString();
